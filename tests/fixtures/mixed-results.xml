@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="6" failures="2" errors="0" time="2.10">
+    <testsuite name="tests/integration/taskService.test.ts" timestamp="2026-01-15T10:00:00.000Z" hostname="ci-runner" tests="4" failures="2" errors="0" skipped="0" time="1.50">
+        <testcase classname="tests/integration/taskService.test.ts" name="taskService &gt; creates a task" time="0.10">
+        </testcase>
+        <testcase classname="tests/integration/taskService.test.ts" name="taskService - cache (FLAKY: async race condition) &gt; should populate cache after creating a task" time="0.30">
+            <failure message="expected undefined to be defined" type="AssertionError">
+AssertionError: expected undefined to be defined
+ ❯ tests/integration/taskService.test.ts:95:20
+            </failure>
+        </testcase>
+        <testcase classname="tests/integration/taskService.test.ts" name="getTasksByIds (REAL FAILURE: consistent failure after refactor) &gt; should return empty array when called with null" time="0.05">
+            <failure message="ids parameter is required" type="Error">
+Error: ids parameter is required
+ ❯ getTasksByIds src/services/taskService.ts:89:11
+ ❯ tests/integration/taskService.test.ts:152:20
+            </failure>
+            <failure message="ids parameter is required" type="Error">
+Error: ids parameter is required
+ ❯ getTasksByIds src/services/taskService.ts:89:11
+ ❯ tests/integration/taskService.test.ts:152:20
+            </failure>
+            <failure message="ids parameter is required" type="Error">
+Error: ids parameter is required
+ ❯ getTasksByIds src/services/taskService.ts:89:11
+ ❯ tests/integration/taskService.test.ts:152:20
+            </failure>
+        </testcase>
+        <testcase classname="tests/integration/taskService.test.ts" name="taskService &gt; gets all tasks" time="0.15">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/validation.test.ts" timestamp="2026-01-15T10:00:00.000Z" hostname="ci-runner" tests="2" failures="0" errors="0" skipped="0" time="0.60">
+        <testcase classname="tests/unit/validation.test.ts" name="validateCreateInput &gt; returns valid for a proper title" time="0.30">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="validateCreateInput &gt; rejects empty title" time="0.30">
+        </testcase>
+    </testsuite>
+</testsuites>

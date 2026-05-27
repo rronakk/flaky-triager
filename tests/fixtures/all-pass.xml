@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="3" failures="0" errors="0" time="0.45">
+    <testsuite name="tests/unit/validation.test.ts" timestamp="2026-01-15T10:00:00.000Z" hostname="ci-runner" tests="2" failures="0" errors="0" skipped="0" time="0.20">
+        <testcase classname="tests/unit/validation.test.ts" name="validateCreateInput &gt; returns valid for a proper title" time="0.10">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="validateCreateInput &gt; rejects empty title" time="0.10">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/stats.test.ts" timestamp="2026-01-15T10:00:00.000Z" hostname="ci-runner" tests="1" failures="0" errors="0" skipped="0" time="0.25">
+        <testcase classname="tests/unit/stats.test.ts" name="getCompletionPercentage &gt; calculates percentage with some done" time="0.25">
+        </testcase>
+    </testsuite>
+</testsuites>

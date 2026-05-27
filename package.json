@@ -1,0 +1,25 @@
+{
+  "name": "flaky-triager",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "tsc",
+    "parse": "tsx src/cli.ts parse",
+    "score": "tsx src/cli.ts score",
+    "analyze": "tsx src/cli.ts analyze"
+  },
+  "bin": {
+    "flaky-triager": "./dist/cli.js"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7"
+  }
+}

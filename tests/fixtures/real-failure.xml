@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="3" failures="1" errors="0" time="0.35">
+    <testsuite name="tests/unit/taskFilter.test.ts" timestamp="2026-01-15T10:00:00.000Z" hostname="ci-runner" tests="1" failures="1" errors="0" skipped="0" time="0.10">
+        <testcase classname="tests/unit/taskFilter.test.ts" name="filterTasks (REAL FAILURE: genuine bug) &gt; should return only done tasks when filtering by done" time="0.05">
+            <failure message="expected [ …(2) ] to have a length of 1 but got 2" type="AssertionError">
+AssertionError: expected [ …(2) ] to have a length of 1 but got 2
+ ❯ tests/unit/taskFilter.test.ts:15:20
+            </failure>
+            <failure message="expected [ …(2) ] to have a length of 1 but got 2" type="AssertionError">
+AssertionError: expected [ …(2) ] to have a length of 1 but got 2
+ ❯ tests/unit/taskFilter.test.ts:15:20
+            </failure>
+            <failure message="expected [ …(2) ] to have a length of 1 but got 2" type="AssertionError">
+AssertionError: expected [ …(2) ] to have a length of 1 but got 2
+ ❯ tests/unit/taskFilter.test.ts:15:20
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/validation.test.ts" timestamp="2026-01-15T10:00:00.000Z" hostname="ci-runner" tests="2" failures="0" errors="0" skipped="0" time="0.25">
+        <testcase classname="tests/unit/validation.test.ts" name="validateCreateInput &gt; validates title" time="0.10">
+        </testcase>
+        <testcase classname="tests/unit/validation.test.ts" name="validateCreateInput &gt; rejects empty" time="0.15">
+        </testcase>
+    </testsuite>
+</testsuites>

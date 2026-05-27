@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="4" failures="1" errors="0" time="1.20">
+    <testsuite name="tests/integration/taskService.test.ts" timestamp="2026-01-15T10:00:00.000Z" hostname="ci-runner" tests="4" failures="1" errors="0" skipped="0" time="1.20">
+        <testcase classname="tests/integration/taskService.test.ts" name="taskService &gt; creates a task" time="0.10">
+        </testcase>
+        <testcase classname="tests/integration/taskService.test.ts" name="taskService - cache (FLAKY: async race condition) &gt; should populate cache after creating a task" time="0.30">
+            <failure message="expected undefined to be defined" type="AssertionError">
+AssertionError: expected undefined to be defined
+ ❯ tests/integration/taskService.test.ts:42:25
+            </failure>
+        </testcase>
+        <testcase classname="tests/integration/taskService.test.ts" name="taskService &gt; gets all tasks" time="0.15">
+        </testcase>
+        <testcase classname="tests/integration/taskService.test.ts" name="taskService &gt; deletes a task" time="0.10">
+        </testcase>
+    </testsuite>
+</testsuites>

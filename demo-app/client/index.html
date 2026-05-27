@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Manager</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .stats-bar { background: #f0f0f0; padding: 12px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 16px; }
+    .stat { font-size: 14px; }
+    .stat strong { font-size: 18px; }
+    form { display: flex; gap: 8px; margin-bottom: 20px; }
+    input[type="text"] { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    button[type="submit"] { background: #0066ff; color: white; }
+    .task-list { list-style: none; }
+    .task-item { display: flex; align-items: center; gap: 8px; padding: 12px 0; border-bottom: 1px solid #eee; }
+    .task-item.done .task-title { text-decoration: line-through; color: #999; }
+    .task-title { flex: 1; }
+    .delete-btn { background: none; color: #cc0000; border: 1px solid #cc0000; font-size: 12px; padding: 4px 8px; }
+    .empty-state { text-align: center; color: #999; padding: 40px 0; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>
