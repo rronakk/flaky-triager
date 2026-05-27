@@ -1,0 +1,33 @@
+name: 'Flaky Triager'
+description: 'Triage flaky and broken tests from JUnit XML and post a PR comment explaining each failure.'
+author: 'ronak.ray@doubleverify.com'
+
+inputs:
+  github-token:
+    description: 'GitHub token with pull_request: write and actions: read scopes.'
+    required: true
+  anthropic-api-key:
+    description: 'Anthropic API key used by the LLM analyzer.'
+    required: true
+  artifact-name:
+    description: 'Name of the JUnit XML artifact to download from the triggering workflow run.'
+    required: false
+    default: 'test-results'
+  results-dir:
+    description: 'Optional local path containing JUnit XML files. If set, the Action skips artifact download and reads from here directly.'
+    required: false
+    default: ''
+
+outputs:
+  flaky-count:
+    description: 'Number of tests classified as flaky.'
+  break-count:
+    description: 'Number of tests classified as real breaks.'
+  inconclusive-count:
+    description: 'Number of tests with an inconclusive verdict.'
+  report-markdown:
+    description: 'Full markdown report posted to the PR (also available in the workflow logs).'
+
+runs:
+  using: 'node20'
+  main: 'dist/action.cjs'
