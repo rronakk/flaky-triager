@@ -2,6 +2,7 @@ import { parseJUnitXMLFiles } from './parser/index.js';
 import { scoreTestResults } from './scorer/index.js';
 import { analyzeFailures } from './analyzer/index.js';
 import { createClaudeProvider } from './analyzer/providers/claude.js';
+import { formatReport, type ReportFormat } from './reporter/index.js';
 
 const [command, ...args] = process.argv.slice(2);
 
@@ -74,6 +75,28 @@ if (command === 'parse') {
       console.log(`Fix:         ${r.analysis.suggestedFix}`);
     }
   }
+} else if (command === 'report') {
+  const dir = args[0];
+  const formatArg = (args[1] ?? 'cli') as ReportFormat;
+  if (!dir) {
+    console.error('Usage: flaky-triager report <directory> [markdown|cli|json]');
+    process.exit(1);
+  }
+  if (!['markdown', 'cli', 'json'].includes(formatArg)) {
+    console.error(`Unknown format "${formatArg}". Use markdown, cli, or json.`);
+    process.exit(1);
+  }
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error('ANTHROPIC_API_KEY is not set. Export it before running `report`.');
+    process.exit(1);
+  }
+
+  const summaries = parseJUnitXMLFiles(dir);
+  const allResults = summaries.flatMap((s) => s.results);
+  const scored = scoreTestResults(allResults);
+  const provider = createClaudeProvider();
+  const analyzed = await analyzeFailures(scored, provider);
+  console.log(formatReport(analyzed, formatArg));
 } else {
-  console.log('Usage: flaky-triager <parse|score|analyze> <directory>');
+  console.log('Usage: flaky-triager <parse|score|analyze|report> <directory> [format]');
 }
