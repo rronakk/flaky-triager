@@ -3,6 +3,7 @@ import { scoreTestResults } from './scorer/index.js';
 import { analyzeFailures } from './analyzer/index.js';
 import { createClaudeProvider } from './analyzer/providers/claude.js';
 import { formatReport, type ReportFormat } from './reporter/index.js';
+import { FirestoreHistoryStore, testKeyFor } from './history/index.js';
 
 const [command, ...args] = process.argv.slice(2);
 
@@ -97,6 +98,30 @@ if (command === 'parse') {
   const provider = createClaudeProvider();
   const analyzed = await analyzeFailures(scored, provider);
   console.log(formatReport(analyzed, formatArg));
+} else if (command === 'history') {
+  const suite = args[0];
+  const testName = args[1];
+  const limit = args[2] ? Number(args[2]) : 20;
+  if (!suite || !testName) {
+    console.error('Usage: flaky-triager history <suite> <test-name> [limit]');
+    console.error('Requires GOOGLE_APPLICATION_CREDENTIALS to point at a Firestore-enabled GCP service account.');
+    process.exit(1);
+  }
+
+  const store = new FirestoreHistoryStore();
+  const records = await store.getHistory(testKeyFor(suite, testName), limit);
+  if (records.length === 0) {
+    console.log(`No history found for ${suite} > ${testName}`);
+  } else {
+    console.log(`History for ${suite} > ${testName} (${records.length} records, newest first):\n`);
+    for (const r of records) {
+      const verdictTag = { passing: 'PASS', flaky: 'FLKY', real_break: 'BREAK', inconclusive: '????' }[r.verdict];
+      console.log(`  ${verdictTag} ${r.timestamp} ${r.sha.slice(0, 8)} (${r.branch})`);
+      if (r.failureMessage) {
+        console.log(`        ${r.failureMessage}`);
+      }
+    }
+  }
 } else {
-  console.log('Usage: flaky-triager <parse|score|analyze|report> <directory> [format]');
+  console.log('Usage: flaky-triager <parse|score|analyze|report|history> ...');
 }

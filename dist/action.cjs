@@ -41704,16 +41704,38 @@ function parseJUnitXMLFiles(dir) {
   });
 }
 
+// src/history/types.ts
+function testKeyFor(suite, testName) {
+  return `${suite}::${testName}`;
+}
+
 // src/scorer/index.ts
-function scoreTestResults(results) {
+var HISTORY_WINDOW = 5;
+function readHistorySignal(records) {
+  const recent = records.slice(0, HISTORY_WINDOW);
+  if (recent.length === 0) return { upgrade: null, flakinessScore: 0 };
+  const hasPass = recent.some((r) => r.verdict === "passing");
+  const hasFail = recent.some((r) => r.verdict === "real_break" || r.verdict === "flaky");
+  const hasIncon = recent.some((r) => r.verdict === "inconclusive");
+  if (hasPass && (hasFail || hasIncon)) {
+    const passCount = recent.filter((r) => r.verdict === "passing").length;
+    const failureRatio = (recent.length - passCount) / recent.length;
+    return { upgrade: "flaky", flakinessScore: Math.round(70 + (1 - failureRatio) * 30) };
+  }
+  if (!hasPass && recent.length >= 2) {
+    return { upgrade: "real_break", flakinessScore: 10 };
+  }
+  return { upgrade: null, flakinessScore: 0 };
+}
+function scoreTestResults(results, history) {
   const grouped = /* @__PURE__ */ new Map();
   for (const result of results) {
-    const key = `${result.suite}::${result.testName}`;
+    const key = testKeyFor(result.suite, result.testName);
     if (!grouped.has(key)) grouped.set(key, []);
     grouped.get(key).push(result);
   }
   const scored = [];
-  for (const [, attempts] of grouped) {
+  for (const [key, attempts] of grouped) {
     const sorted = [...attempts].sort((a, b) => a.retryIndex - b.retryIndex);
     const failures = sorted.filter((a) => a.status === "failed");
     const passes = sorted.filter((a) => a.status === "passed");
@@ -41732,6 +41754,16 @@ function scoreTestResults(results) {
     } else {
       verdict = "inconclusive";
       flakinessScore = 20;
+    }
+    if (verdict === "inconclusive" && history) {
+      const records = history.get(key);
+      if (records && records.length > 0) {
+        const signal = readHistorySignal(records);
+        if (signal.upgrade) {
+          verdict = signal.upgrade;
+          flakinessScore = signal.flakinessScore;
+        }
+      }
     }
     const firstFailure = failures[0];
     scored.push({
