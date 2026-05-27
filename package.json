@@ -14,6 +14,7 @@
     "flaky-triager": "./dist/cli.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.99.0",
     "fast-xml-parser": "^5.8.0"
   },
   "devDependencies": {

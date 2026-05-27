@@ -1,5 +1,7 @@
 import { parseJUnitXMLFiles } from './parser/index.js';
 import { scoreTestResults } from './scorer/index.js';
+import { analyzeFailures } from './analyzer/index.js';
+import { createClaudeProvider } from './analyzer/providers/claude.js';
 
 const [command, ...args] = process.argv.slice(2);
 
@@ -44,6 +46,34 @@ if (command === 'parse') {
   const flaky = scored.filter((s) => s.verdict === 'flaky').length;
   const inconclusive = scored.filter((s) => s.verdict === 'inconclusive').length;
   console.log(`\nSummary: ${scored.length} tests | ${flaky} flaky | ${inconclusive} inconclusive`);
+} else if (command === 'analyze') {
+  const dir = args[0];
+  if (!dir) {
+    console.error('Usage: flaky-triager analyze <directory>');
+    process.exit(1);
+  }
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error('ANTHROPIC_API_KEY is not set. Export it before running `analyze`.');
+    process.exit(1);
+  }
+
+  const summaries = parseJUnitXMLFiles(dir);
+  const allResults = summaries.flatMap((s) => s.results);
+  const scored = scoreTestResults(allResults);
+  const provider = createClaudeProvider();
+  const analyzed = await analyzeFailures(scored, provider);
+
+  for (const r of analyzed) {
+    if (r.verdict === 'passing') continue;
+    console.log(`\n${'='.repeat(60)}`);
+    console.log(`${r.verdict.toUpperCase()} [${r.flakinessScore}] ${r.suite} > ${r.testName}`);
+    if (r.analysis) {
+      console.log(`Category:    ${r.analysis.rootCauseCategory}`);
+      console.log(`Confidence:  ${r.analysis.confidence}`);
+      console.log(`Explanation: ${r.analysis.explanation}`);
+      console.log(`Fix:         ${r.analysis.suggestedFix}`);
+    }
+  }
 } else {
   console.log('Usage: flaky-triager <parse|score|analyze> <directory>');
 }
