@@ -1,4 +1,5 @@
 import { parseJUnitXMLFiles } from './parser/index.js';
+import { scoreTestResults } from './scorer/index.js';
 
 const [command, ...args] = process.argv.slice(2);
 
@@ -22,6 +23,27 @@ if (command === 'parse') {
       }
     }
   }
+} else if (command === 'score') {
+  const dir = args[0];
+  if (!dir) {
+    console.error('Usage: flaky-triager score <directory>');
+    process.exit(1);
+  }
+  const summaries = parseJUnitXMLFiles(dir);
+  const allResults = summaries.flatMap((s) => s.results);
+  const scored = scoreTestResults(allResults);
+
+  for (const s of scored) {
+    const icon = { passing: 'PASS', flaky: 'FLKY', real_break: 'BREAK', inconclusive: '????' }[s.verdict];
+    console.log(`  ${icon} [${s.flakinessScore}] ${s.suite} > ${s.testName} (${s.verdict})`);
+    if (s.failureMessage) {
+      console.log(`       ${s.failureMessage}`);
+    }
+  }
+
+  const flaky = scored.filter((s) => s.verdict === 'flaky').length;
+  const inconclusive = scored.filter((s) => s.verdict === 'inconclusive').length;
+  console.log(`\nSummary: ${scored.length} tests | ${flaky} flaky | ${inconclusive} inconclusive`);
 } else {
   console.log('Usage: flaky-triager <parse|score|analyze> <directory>');
 }
