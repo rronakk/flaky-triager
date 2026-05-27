@@ -20,7 +20,8 @@
     "@actions/github": "^9.1.1",
     "@anthropic-ai/sdk": "^0.99.0",
     "adm-zip": "^0.5.17",
-    "fast-xml-parser": "^5.8.0"
+    "fast-xml-parser": "^5.8.0",
+    "firebase-admin": "^13.10.0"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",
