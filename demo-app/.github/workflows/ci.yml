@@ -27,16 +27,11 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run unit tests
-        run: npx vitest run --project unit
-        continue-on-error: true
+      - name: Prepare results directory
+        run: mkdir -p test-results
 
-      - name: Run integration tests
-        run: npx vitest run --project integration
-        continue-on-error: true
-
-      - name: Run API tests
-        run: npx vitest run --project api
+      - name: Run vitest (unit, integration, API)
+        run: npx vitest run
         continue-on-error: true
 
       - name: Build frontend
