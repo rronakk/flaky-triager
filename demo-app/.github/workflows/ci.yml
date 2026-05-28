@@ -31,16 +31,8 @@ jobs:
         run: mkdir -p test-results
 
       - name: Run vitest (unit, integration, API)
-        run: npx vitest run --reporter=default --reporter=junit --outputFile.junit=test-results/junit-vitest.xml
+        run: npx vitest run
         continue-on-error: true
-
-      - name: Debug — list test-results after vitest
-        if: always()
-        run: |
-          echo "--- ls -la test-results ---"
-          ls -la test-results/ || echo "test-results missing"
-          echo "--- head junit-vitest.xml ---"
-          head -3 test-results/junit-vitest.xml 2>/dev/null || echo "junit-vitest.xml missing"
 
       - name: Build frontend
         run: npm run build:client
@@ -48,12 +40,6 @@ jobs:
       - name: Run E2E tests
         run: npx playwright test
         continue-on-error: true
-
-      - name: Debug — list test-results after e2e
-        if: always()
-        run: |
-          echo "--- ls -la test-results ---"
-          ls -la test-results/ || echo "test-results missing"
 
       - name: Upload JUnit XML results
         if: always()
