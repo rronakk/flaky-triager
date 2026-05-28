@@ -3,6 +3,7 @@ import type { TestRunRecord } from './types.js';
 
 export { InMemoryHistoryStore } from './in-memory.js';
 export { FirestoreHistoryStore } from './firestore.js';
+export { createHistoryStore } from './init.js';
 export type { HistoryStore, TestRunRecord } from './types.js';
 export { testKeyFor } from './types.js';
 

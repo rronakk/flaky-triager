@@ -17,6 +17,18 @@ inputs:
     description: 'Optional local path containing JUnit XML files. If set, the Action skips artifact download and reads from here directly.'
     required: false
     default: ''
+  firestore-credentials:
+    description: 'Optional Google service account JSON (as a single-line string, typically stored in a secret) for persisting test-run history to Firestore. If omitted or invalid, the Action runs without history — current-run signals are used as-is and the inconclusive→flaky/real_break upgrade rules will not fire.'
+    required: false
+    default: ''
+  firestore-project-id:
+    description: 'Optional Google Cloud project ID for Firestore. If omitted, the project_id from firestore-credentials is used.'
+    required: false
+    default: ''
+  history-limit:
+    description: 'How many recent runs to load per test when augmenting verdicts.'
+    required: false
+    default: '10'
 
 outputs:
   flaky-count:

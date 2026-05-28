@@ -9,6 +9,13 @@ import { scoreTestResults } from './scorer/index.js';
 import { analyzeFailures } from './analyzer/index.js';
 import { createClaudeProvider } from './analyzer/providers/claude.js';
 import { formatReport, REPORT_MARKER, summarize } from './reporter/index.js';
+import {
+  createHistoryStore,
+  recordsFromScored,
+  testKeyFor,
+  type HistoryStore,
+  type TestRunRecord,
+} from './history/index.js';
 
 type Octokit = ReturnType<typeof github.getOctokit>;
 
@@ -81,12 +88,44 @@ function resolvePrNumber(): number | undefined {
   return undefined;
 }
 
+function resolveShaAndBranch(): { sha: string; branch: string } {
+  const { context } = github;
+  const pr = context.payload.pull_request;
+  if (pr?.head?.sha && pr.head.ref) {
+    return { sha: pr.head.sha, branch: pr.head.ref };
+  }
+  const wr = context.payload.workflow_run;
+  if (wr?.head_sha && wr?.head_branch) {
+    return { sha: wr.head_sha, branch: wr.head_branch };
+  }
+  const branch = context.ref?.replace(/^refs\/heads\//, '') || 'unknown';
+  return { sha: context.sha || 'unknown', branch };
+}
+
+async function loadHistoryForKeys(
+  store: HistoryStore,
+  keys: string[],
+  limit: number,
+): Promise<Map<string, TestRunRecord[]>> {
+  const map = new Map<string, TestRunRecord[]>();
+  const results = await Promise.all(
+    keys.map(async (k) => ({ key: k, records: await store.getHistory(k, limit) })),
+  );
+  for (const { key, records } of results) {
+    if (records.length > 0) map.set(key, records);
+  }
+  return map;
+}
+
 async function run(): Promise<void> {
   try {
     const githubToken = core.getInput('github-token', { required: true });
     const anthropicApiKey = core.getInput('anthropic-api-key', { required: true });
     const artifactName = core.getInput('artifact-name') || 'test-results';
     const resultsDirInput = core.getInput('results-dir');
+    const firestoreCredentials = core.getInput('firestore-credentials');
+    const firestoreProjectId = core.getInput('firestore-project-id');
+    const historyLimit = Number(core.getInput('history-limit') || '10');
 
     process.env.ANTHROPIC_API_KEY = anthropicApiKey;
 
@@ -114,7 +153,35 @@ async function run(): Promise<void> {
     const allResults = summaries.flatMap((s) => s.results);
     core.info(`Parsed ${summaries.length} XML files, ${allResults.length} test results.`);
 
-    const scored = scoreTestResults(allResults);
+    const historyStore = await createHistoryStore({
+      credentialsJson: firestoreCredentials,
+      projectId: firestoreProjectId || undefined,
+      log: { info: core.info, warning: core.warning },
+    });
+
+    const rawScored = scoreTestResults(allResults);
+
+    let scored = rawScored;
+    if (historyStore) {
+      const { sha, branch } = resolveShaAndBranch();
+      const keys = rawScored.map((s) => testKeyFor(s.suite, s.testName));
+
+      const history = await loadHistoryForKeys(historyStore, keys, historyLimit).catch((err) => {
+        core.warning(`Failed to load history: ${err instanceof Error ? err.message : String(err)}`);
+        return new Map<string, TestRunRecord[]>();
+      });
+      core.info(`Loaded history for ${history.size} of ${keys.length} tests.`);
+
+      scored = scoreTestResults(allResults, history);
+
+      await historyStore
+        .saveResults(sha, branch, recordsFromScored(rawScored, { sha, branch }))
+        .then(() => core.info(`Saved ${rawScored.length} run records to history.`))
+        .catch((err) =>
+          core.warning(`Failed to save history: ${err instanceof Error ? err.message : String(err)}`),
+        );
+    }
+
     const provider = createClaudeProvider();
     const analyzed = await analyzeFailures(scored, provider);
     const markdown = formatReport(analyzed, 'markdown');
