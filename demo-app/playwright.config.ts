@@ -2,6 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: 'tests/e2e',
+  outputDir: 'playwright-output',
   retries: 2,
   reporter: [['list'], ['junit', { outputFile: 'test-results/junit-e2e.xml' }]],
   use: {
