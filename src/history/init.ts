@@ -42,8 +42,9 @@ export async function createHistoryStore(
         projectId: opts.projectId || (parsed.project_id as string | undefined),
       });
     }
-    const firestore = admin.firestore() as unknown as FirestoreLike;
-    return new FirestoreHistoryStore({ firestore });
+    const db = admin.firestore();
+    db.settings({ ignoreUndefinedProperties: true });
+    return new FirestoreHistoryStore({ firestore: db as unknown as FirestoreLike });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     log.warning(`Failed to initialise Firestore: ${msg}. Running without history.`);
