@@ -9,6 +9,7 @@ export interface InitLogger {
 export interface CreateHistoryStoreOptions {
   credentialsJson?: string;
   projectId?: string;
+  databaseId?: string;
   log?: InitLogger;
 }
 
@@ -35,15 +36,19 @@ export async function createHistoryStore(
 
   try {
     const admin = await import('firebase-admin');
+    const { getFirestore } = await import('firebase-admin/firestore');
     type ServiceAccountLike = Parameters<typeof admin.credential.cert>[0];
-    if (admin.apps.length === 0) {
-      admin.initializeApp({
+    let app = admin.apps[0];
+    if (!app) {
+      app = admin.initializeApp({
         credential: admin.credential.cert(parsed as ServiceAccountLike),
         projectId: opts.projectId || (parsed.project_id as string | undefined),
       });
     }
-    const db = admin.firestore();
+    const databaseId = opts.databaseId?.trim() || '(default)';
+    const db = getFirestore(app, databaseId);
     db.settings({ ignoreUndefinedProperties: true });
+    log.info(`Firestore initialised: project=${app.options.projectId}, database=${databaseId}`);
     return new FirestoreHistoryStore({ firestore: db as unknown as FirestoreLike });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

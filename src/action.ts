@@ -125,6 +125,7 @@ async function run(): Promise<void> {
     const resultsDirInput = core.getInput('results-dir');
     const firestoreCredentials = core.getInput('firestore-credentials');
     const firestoreProjectId = core.getInput('firestore-project-id');
+    const firestoreDatabaseId = core.getInput('firestore-database-id');
     const historyLimit = Number(core.getInput('history-limit') || '10');
 
     process.env.ANTHROPIC_API_KEY = anthropicApiKey;
@@ -156,6 +157,7 @@ async function run(): Promise<void> {
     const historyStore = await createHistoryStore({
       credentialsJson: firestoreCredentials,
       projectId: firestoreProjectId || undefined,
+      databaseId: firestoreDatabaseId || undefined,
       log: { info: core.info, warning: core.warning },
     });
 

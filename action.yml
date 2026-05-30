@@ -25,6 +25,10 @@ inputs:
     description: 'Optional Google Cloud project ID for Firestore. If omitted, the project_id from firestore-credentials is used.'
     required: false
     default: ''
+  firestore-database-id:
+    description: 'Firestore database ID. Defaults to "(default)". Set to your database name if you created Firestore with a non-default ID.'
+    required: false
+    default: '(default)'
   history-limit:
     description: 'How many recent runs to load per test when augmenting verdicts.'
     required: false

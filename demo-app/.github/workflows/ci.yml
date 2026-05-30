@@ -56,4 +56,5 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
           firestore-credentials: ${{ secrets.FIRESTORE_CREDENTIALS }}
+          firestore-database-id: flaky
           results-dir: test-results

@@ -8,8 +8,8 @@ var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+var __commonJS = (cb, mod2) => function __require() {
+  return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
 };
 var __export = (target, all) => {
   for (var name in all)
@@ -23,15 +23,15 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__getProtoOf(mod2)) : {}, __copyProps(
   // If the importer is in node compatibility mode or this is not an ESM
   // file that has been converted to a CommonJS file using a Babel-
   // compatible transform (i.e. "__esModule" has not been set), then set
   // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
+  isNodeMode || !mod2 || !mod2.__esModule ? __defProp(target, "default", { value: mod2, enumerable: true }) : target,
+  mod2
 ));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toCommonJS = (mod2) => __copyProps(__defProp({}, "__esModule", { value: true }), mod2);
 
 // node_modules/tunnel/lib/tunnel.js
 var require_tunnel = __commonJS({
@@ -5718,13 +5718,13 @@ var require_client_h1 = __commonJS({
     var extractBody;
     async function lazyllhttp() {
       const llhttpWasmData = process.env.JEST_WORKER_ID ? require_llhttp_wasm() : void 0;
-      let mod;
+      let mod2;
       try {
-        mod = await WebAssembly.compile(require_llhttp_simd_wasm());
+        mod2 = await WebAssembly.compile(require_llhttp_simd_wasm());
       } catch (e2) {
-        mod = await WebAssembly.compile(llhttpWasmData || require_llhttp_wasm());
+        mod2 = await WebAssembly.compile(llhttpWasmData || require_llhttp_wasm());
       }
-      return await WebAssembly.instantiate(mod, {
+      return await WebAssembly.instantiate(mod2, {
         env: {
           /* eslint-disable camelcase */
           wasm_on_url: (p, at, len) => {
@@ -18786,13 +18786,13 @@ var require_lib = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
@@ -25411,30 +25411,30 @@ var require_base64 = __commonJS({
           var op = 0;
           var i2 = 0;
           var haveBad = 0;
-          var v0 = 0, v15 = 0, v2 = 0, v36 = 0;
+          var v0 = 0, v16 = 0, v2 = 0, v36 = 0;
           for (; i2 < length - 4; i2 += 4) {
             v0 = this._decodeChar(s3.charCodeAt(i2 + 0));
-            v15 = this._decodeChar(s3.charCodeAt(i2 + 1));
+            v16 = this._decodeChar(s3.charCodeAt(i2 + 1));
             v2 = this._decodeChar(s3.charCodeAt(i2 + 2));
             v36 = this._decodeChar(s3.charCodeAt(i2 + 3));
-            out[op++] = v0 << 2 | v15 >>> 4;
-            out[op++] = v15 << 4 | v2 >>> 2;
+            out[op++] = v0 << 2 | v16 >>> 4;
+            out[op++] = v16 << 4 | v2 >>> 2;
             out[op++] = v2 << 6 | v36;
             haveBad |= v0 & INVALID_BYTE;
-            haveBad |= v15 & INVALID_BYTE;
+            haveBad |= v16 & INVALID_BYTE;
             haveBad |= v2 & INVALID_BYTE;
             haveBad |= v36 & INVALID_BYTE;
           }
           if (i2 < length - 1) {
             v0 = this._decodeChar(s3.charCodeAt(i2));
-            v15 = this._decodeChar(s3.charCodeAt(i2 + 1));
-            out[op++] = v0 << 2 | v15 >>> 4;
+            v16 = this._decodeChar(s3.charCodeAt(i2 + 1));
+            out[op++] = v0 << 2 | v16 >>> 4;
             haveBad |= v0 & INVALID_BYTE;
-            haveBad |= v15 & INVALID_BYTE;
+            haveBad |= v16 & INVALID_BYTE;
           }
           if (i2 < length - 2) {
             v2 = this._decodeChar(s3.charCodeAt(i2 + 2));
-            out[op++] = v15 << 4 | v2 >>> 2;
+            out[op++] = v16 << 4 | v2 >>> 2;
             haveBad |= v2 & INVALID_BYTE;
           }
           if (i2 < length - 3) {
@@ -33736,7 +33736,7 @@ var require_error = __commonJS({
       }
     };
     exports2.FirebaseDatabaseError = FirebaseDatabaseError;
-    var FirebaseFirestoreError = class extends FirebaseError {
+    var FirebaseFirestoreError2 = class extends FirebaseError {
       /**
        * @param info - The error code info.
        * @param message - The error message. This will override the default
@@ -33748,7 +33748,7 @@ var require_error = __commonJS({
         super({ code: "firestore/" + info2.code, message: message || info2.message });
       }
     };
-    exports2.FirebaseFirestoreError = FirebaseFirestoreError;
+    exports2.FirebaseFirestoreError = FirebaseFirestoreError2;
     var FirebaseInstanceIdError = class _FirebaseInstanceIdError extends FirebaseError {
       /**
        *
@@ -34778,8 +34778,8 @@ var require_util10 = __commonJS({
 var require_common = __commonJS({
   "node_modules/google-auth-library/node_modules/gaxios/build/cjs/src/common.js"(exports2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.GaxiosError = exports2.GAXIOS_ERROR_SYMBOL = void 0;
@@ -35803,13 +35803,13 @@ var require_helpers = __commonJS({
     }) : function(o, v) {
       o["default"] = v;
     });
-    var __importStar = exports2 && exports2.__importStar || function(mod) {
-      if (mod && mod.__esModule) return mod;
+    var __importStar = exports2 && exports2.__importStar || function(mod2) {
+      if (mod2 && mod2.__esModule) return mod2;
       var result = {};
-      if (mod != null) {
-        for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+      if (mod2 != null) {
+        for (var k in mod2) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod2, k)) __createBinding(result, mod2, k);
       }
-      __setModuleDefault(result, mod);
+      __setModuleDefault(result, mod2);
       return result;
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -35873,13 +35873,13 @@ var require_dist3 = __commonJS({
     }) : function(o, v) {
       o["default"] = v;
     });
-    var __importStar = exports2 && exports2.__importStar || function(mod) {
-      if (mod && mod.__esModule) return mod;
+    var __importStar = exports2 && exports2.__importStar || function(mod2) {
+      if (mod2 && mod2.__esModule) return mod2;
       var result = {};
-      if (mod != null) {
-        for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+      if (mod2 != null) {
+        for (var k in mod2) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod2, k)) __createBinding(result, mod2, k);
       }
-      __setModuleDefault(result, mod);
+      __setModuleDefault(result, mod2);
       return result;
     };
     var __exportStar = exports2 && exports2.__exportStar || function(m2, exports3) {
@@ -36011,8 +36011,8 @@ var require_dist3 = __commonJS({
 var require_parse_proxy_response = __commonJS({
   "node_modules/https-proxy-agent/dist/parse-proxy-response.js"(exports2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.parseProxyResponse = void 0;
@@ -36125,17 +36125,17 @@ var require_dist4 = __commonJS({
     }) : function(o, v) {
       o["default"] = v;
     });
-    var __importStar = exports2 && exports2.__importStar || function(mod) {
-      if (mod && mod.__esModule) return mod;
+    var __importStar = exports2 && exports2.__importStar || function(mod2) {
+      if (mod2 && mod2.__esModule) return mod2;
       var result = {};
-      if (mod != null) {
-        for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+      if (mod2 != null) {
+        for (var k in mod2) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod2, k)) __createBinding(result, mod2, k);
       }
-      __setModuleDefault(result, mod);
+      __setModuleDefault(result, mod2);
       return result;
     };
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.HttpsProxyAgent = void 0;
@@ -42744,8 +42744,8 @@ var init_src = __esm({
 var require_gaxios = __commonJS({
   "node_modules/google-auth-library/node_modules/gaxios/build/cjs/src/gaxios.js"(exports2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var _a2;
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -43379,8 +43379,8 @@ var require_util11 = __commonJS({
 var require_common3 = __commonJS({
   "node_modules/gcp-metadata/node_modules/gaxios/build/cjs/src/common.js"(exports2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.GaxiosError = exports2.GAXIOS_ERROR_SYMBOL = void 0;
@@ -45436,8 +45436,8 @@ var init_src2 = __esm({
 var require_gaxios2 = __commonJS({
   "node_modules/gcp-metadata/node_modules/gaxios/build/cjs/src/gaxios.js"(exports2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var _a2;
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -47852,13 +47852,13 @@ var require_logging_utils = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
@@ -48166,13 +48166,13 @@ var require_src5 = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
@@ -63701,15 +63701,15 @@ var require_diff = __commonJS({
     "use strict";
     var parse8 = require_parse3();
     var diff = (version1, version22) => {
-      const v15 = parse8(version1, null, true);
+      const v16 = parse8(version1, null, true);
       const v2 = parse8(version22, null, true);
-      const comparison = v15.compare(v2);
+      const comparison = v16.compare(v2);
       if (comparison === 0) {
         return null;
       }
       const v1Higher = comparison > 0;
-      const highVersion = v1Higher ? v15 : v2;
-      const lowVersion = v1Higher ? v2 : v15;
+      const highVersion = v1Higher ? v16 : v2;
+      const lowVersion = v1Higher ? v2 : v16;
       const highHasPre = !!highVersion.prerelease.length;
       const lowHasPre = !!lowVersion.prerelease.length;
       if (lowHasPre && !highHasPre) {
@@ -63724,13 +63724,13 @@ var require_diff = __commonJS({
         }
       }
       const prefix = highHasPre ? "pre" : "";
-      if (v15.major !== v2.major) {
+      if (v16.major !== v2.major) {
         return prefix + "major";
       }
-      if (v15.minor !== v2.minor) {
+      if (v16.minor !== v2.minor) {
         return prefix + "minor";
       }
-      if (v15.patch !== v2.patch) {
+      if (v16.patch !== v2.patch) {
         return prefix + "patch";
       }
       return "prerelease";
@@ -72313,8 +72313,8 @@ var require_sync = __commonJS({
       for (var ar = [], i2 = 0; i2 < arguments.length; i2++) ar = ar.concat(__read(arguments[i2]));
       return ar;
     };
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.syncMemoizer = void 0;
@@ -72441,8 +72441,8 @@ var require_async = __commonJS({
       };
       throw new TypeError(s3 ? "Object is not iterable." : "Symbol.iterator is not defined.");
     };
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.asyncMemoizer = void 0;
@@ -90556,7 +90556,7 @@ var require_index_standalone = __commonJS({
         return this.getRef();
       }
     };
-    var Query = class _Query {
+    var Query2 = class _Query {
       constructor(database, _delegate) {
         this.database = database;
         this._delegate = _delegate;
@@ -90785,7 +90785,7 @@ var require_index_standalone = __commonJS({
         return new Reference(this.database, new _ReferenceImpl(this._delegate._repo, this._delegate._path));
       }
     };
-    var Reference = class _Reference extends Query {
+    var Reference = class _Reference extends Query2 {
       /**
        * Call options:
        *   new Reference(Repo, Path) or
@@ -91017,7 +91017,7 @@ var require_index_standalone = __commonJS({
         customAuthImpl: app2.INTERNAL,
         namespace: {
           Reference,
-          Query,
+          Query: Query2,
           Database,
           DataSnapshot,
           enableLogging: enableLogging_1,
@@ -91030,7 +91030,7 @@ var require_index_standalone = __commonJS({
     exports2.DataSnapshot = DataSnapshot;
     exports2.Database = Database;
     exports2.OnDisconnect = OnDisconnect_1;
-    exports2.Query = Query;
+    exports2.Query = Query2;
     exports2.Reference = Reference;
     exports2.ServerValue = ServerValue;
     exports2.enableLogging = enableLogging_1;
@@ -95151,8 +95151,8 @@ var require_util13 = __commonJS({
 var require_common4 = __commonJS({
   "node_modules/gaxios/build/src/common.js"(exports2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var _a2;
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -95779,13 +95779,13 @@ var require_gaxios3 = __commonJS({
     }) : function(o, v) {
       o["default"] = v;
     });
-    var __importStar = exports2 && exports2.__importStar || function(mod) {
-      if (mod && mod.__esModule) return mod;
+    var __importStar = exports2 && exports2.__importStar || function(mod2) {
+      if (mod2 && mod2.__esModule) return mod2;
       var result = {};
-      if (mod != null) {
-        for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+      if (mod2 != null) {
+        for (var k in mod2) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod2, k)) __createBinding(result, mod2, k);
       }
-      __setModuleDefault(result, mod);
+      __setModuleDefault(result, mod2);
       return result;
     };
     var __classPrivateFieldGet2 = exports2 && exports2.__classPrivateFieldGet || function(receiver, state, kind, f4) {
@@ -95799,8 +95799,8 @@ var require_gaxios3 = __commonJS({
       if (typeof state === "function" ? receiver !== state || !f4 : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
       return kind === "a" ? f4.call(receiver, value) : f4 ? f4.value = value : state.set(receiver, value), value;
     };
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var _Gaxios_instances;
     var _a2;
@@ -96358,13 +96358,13 @@ var require_logging_utils2 = __commonJS({
     }) : function(o, v) {
       o["default"] = v;
     });
-    var __importStar = exports2 && exports2.__importStar || function(mod) {
-      if (mod && mod.__esModule) return mod;
+    var __importStar = exports2 && exports2.__importStar || function(mod2) {
+      if (mod2 && mod2.__esModule) return mod2;
       var result = {};
-      if (mod != null) {
-        for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+      if (mod2 != null) {
+        for (var k in mod2) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod2, k)) __createBinding(result, mod2, k);
       }
-      __setModuleDefault(result, mod);
+      __setModuleDefault(result, mod2);
       return result;
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -103482,8 +103482,8 @@ var require_promisify = __commonJS({
 var require_src14 = __commonJS({
   "node_modules/http-proxy-agent/node_modules/agent-base/dist/src/index.js"(exports2, module2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var events_1 = require("events");
     var debug_1 = __importDefault(require_src());
@@ -103692,8 +103692,8 @@ var require_agent2 = __commonJS({
         step((generator = generator.apply(thisArg, _arguments || [])).next());
       });
     };
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     var net_1 = __importDefault(require("net"));
@@ -103801,8 +103801,8 @@ var require_agent2 = __commonJS({
 var require_dist6 = __commonJS({
   "node_modules/http-proxy-agent/dist/index.js"(exports2, module2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var agent_1 = __importDefault(require_agent2());
     function createHttpProxyAgent(opts) {
@@ -103842,8 +103842,8 @@ var require_promisify2 = __commonJS({
 var require_src15 = __commonJS({
   "node_modules/teeny-request/node_modules/agent-base/dist/src/index.js"(exports2, module2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var events_1 = require("events");
     var debug_1 = __importDefault(require_src());
@@ -104025,8 +104025,8 @@ var require_src15 = __commonJS({
 var require_parse_proxy_response2 = __commonJS({
   "node_modules/teeny-request/node_modules/https-proxy-agent/dist/parse-proxy-response.js"(exports2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     var debug_1 = __importDefault(require_src());
@@ -104118,8 +104118,8 @@ var require_agent3 = __commonJS({
         step((generator = generator.apply(thisArg, _arguments || [])).next());
       });
     };
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     var net_1 = __importDefault(require("net"));
@@ -104251,8 +104251,8 @@ var require_agent3 = __commonJS({
 var require_dist7 = __commonJS({
   "node_modules/teeny-request/node_modules/https-proxy-agent/dist/index.js"(exports2, module2) {
     "use strict";
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var agent_1 = __importDefault(require_agent3());
     function createHttpsProxyAgent(opts) {
@@ -104862,13 +104862,13 @@ var require_util15 = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
@@ -108104,18 +108104,18 @@ var require_util16 = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.util = exports2.Util = exports2.PartialFailureError = exports2.ApiError = exports2.GCCL_GCS_CMD_KEY = void 0;
@@ -108723,13 +108723,13 @@ var require_service = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
@@ -111726,13 +111726,13 @@ var require_resumable_upload = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
@@ -111747,8 +111747,8 @@ var require_resumable_upload = __commonJS({
       if (typeof state === "function" ? receiver !== state || !f4 : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
       return kind === "m" ? f4 : kind === "a" ? f4.call(receiver) : f4 ? f4.value : state.get(receiver);
     };
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var _Upload_instances;
     var _Upload_hashValidator;
@@ -112569,13 +112569,13 @@ var require_signer = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
@@ -112847,13 +112847,13 @@ var require_file2 = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
@@ -112862,8 +112862,8 @@ var require_file2 = __commonJS({
       if (typeof state === "function" ? receiver !== state || !f4 : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
       return kind === "m" ? f4 : kind === "a" ? f4.call(receiver) : f4 ? f4.value : state.get(receiver);
     };
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var _File_instances;
     var _File_validateIntegrity;
@@ -116716,18 +116716,18 @@ var require_bucket = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Bucket = exports2.BucketExceptionMessages = exports2.AvailableServiceObjectMethods = exports2.BucketActionToHTTPMethod = void 0;
@@ -122735,13 +122735,13 @@ var require_transfer_manager = __commonJS({
         };
         return ownKeys(o);
       };
-      return function(mod) {
-        if (mod && mod.__esModule) return mod;
+      return function(mod2) {
+        if (mod2 && mod2.__esModule) return mod2;
         var result = {};
-        if (mod != null) {
-          for (var k = ownKeys(mod), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod, k[i2]);
+        if (mod2 != null) {
+          for (var k = ownKeys(mod2), i2 = 0; i2 < k.length; i2++) if (k[i2] !== "default") __createBinding(result, mod2, k[i2]);
         }
-        __setModuleDefault(result, mod);
+        __setModuleDefault(result, mod2);
         return result;
       };
     })();
@@ -122750,8 +122750,8 @@ var require_transfer_manager = __commonJS({
       if (typeof state === "function" ? receiver !== state || !f4 : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
       return kind === "m" ? f4 : kind === "a" ? f4.call(receiver) : f4 ? f4.value : state.get(receiver);
     };
-    var __importDefault = exports2 && exports2.__importDefault || function(mod) {
-      return mod && mod.__esModule ? mod : { "default": mod };
+    var __importDefault = exports2 && exports2.__importDefault || function(mod2) {
+      return mod2 && mod2.__esModule ? mod2 : { "default": mod2 };
     };
     var _XMLMultiPartUploadHelper_instances;
     var _XMLMultiPartUploadHelper_setGoogApiClientHeaders;
@@ -124363,8 +124363,8 @@ var require_inquire = __commonJS({
         if (typeof require !== "function") {
           return null;
         }
-        var mod = require(moduleName);
-        if (mod && (mod.length || Object.keys(mod).length)) return mod;
+        var mod2 = require(moduleName);
+        if (mod2 && (mod2.length || Object.keys(mod2).length)) return mod2;
         return null;
       } catch (err) {
         return null;
@@ -131556,13 +131556,13 @@ var require_logging_utils3 = __commonJS({
     }) : function(o, v) {
       o["default"] = v;
     });
-    var __importStar = exports2 && exports2.__importStar || function(mod) {
-      if (mod && mod.__esModule) return mod;
+    var __importStar = exports2 && exports2.__importStar || function(mod2) {
+      if (mod2 && mod2.__esModule) return mod2;
       var result = {};
-      if (mod != null) {
-        for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+      if (mod2 != null) {
+        for (var k in mod2) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod2, k)) __createBinding(result, mod2, k);
       }
-      __setModuleDefault(result, mod);
+      __setModuleDefault(result, mod2);
       return result;
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -151311,7 +151311,7 @@ var require_timestamp2 = __commonJS({
     var MS_TO_NANOS = 1e6;
     var MIN_SECONDS = -62135596800;
     var MAX_SECONDS = 253402300799;
-    var Timestamp = class _Timestamp {
+    var Timestamp2 = class _Timestamp {
       /**
        * Creates a new timestamp with the current date, with millisecond precision.
        *
@@ -151531,7 +151531,7 @@ var require_timestamp2 = __commonJS({
         return formattedSeconds + "." + formattedNanoseconds;
       }
     };
-    exports2.Timestamp = Timestamp;
+    exports2.Timestamp = Timestamp2;
   }
 });
 
@@ -151692,7 +151692,7 @@ var require_logger = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.logger = logger;
-    exports2.setLogFunction = setLogFunction;
+    exports2.setLogFunction = setLogFunction2;
     exports2.setLibVersion = setLibVersion;
     var util = require("util");
     var validate_1 = require_validate();
@@ -151706,7 +151706,7 @@ var require_logger = __commonJS({
         logFunction(`Firestore (${libVersion}) ${time} ${requestTag} [${methodName}]: ` + formattedMessage);
       }
     }
-    function setLogFunction(logger2) {
+    function setLogFunction2(logger2) {
       if (logger2 !== null)
         (0, validate_1.validateFunction)("logger", logger2);
       logFunction = logger2;
@@ -152156,7 +152156,7 @@ var require_geo_point = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.GeoPoint = void 0;
     var validate_1 = require_validate();
-    var GeoPoint = class _GeoPoint {
+    var GeoPoint2 = class _GeoPoint {
       /**
        * Creates a [GeoPoint]{@link GeoPoint}.
        *
@@ -152232,7 +152232,7 @@ var require_geo_point = __commonJS({
         return new _GeoPoint(proto.latitude || 0, proto.longitude || 0);
       }
     };
-    exports2.GeoPoint = GeoPoint;
+    exports2.GeoPoint = GeoPoint2;
   }
 });
 
@@ -152844,7 +152844,7 @@ var require_path2 = __commonJS({
         throw new Error(`${(0, validate_1.invalidArgumentMessage)(arg, "resource path")} Paths must not contain //.`);
       }
     }
-    var FieldPath = class _FieldPath extends Path {
+    var FieldPath2 = class _FieldPath extends Path {
       /**
        * Constructs a Firestore Field Path.
        *
@@ -152956,10 +152956,10 @@ var require_path2 = __commonJS({
         return super.isEqual(other);
       }
     };
-    exports2.FieldPath = FieldPath;
-    FieldPath._DOCUMENT_ID = new FieldPath("__name__");
+    exports2.FieldPath = FieldPath2;
+    FieldPath2._DOCUMENT_ID = new FieldPath2("__name__");
     function validateFieldPath(arg, fieldPath) {
-      if (fieldPath instanceof FieldPath) {
+      if (fieldPath instanceof FieldPath2) {
         return;
       }
       if (fieldPath === void 0) {
@@ -153412,7 +153412,7 @@ var require_field_value = __commonJS({
       }
     };
     exports2.VectorValue = VectorValue;
-    var FieldValue = class {
+    var FieldValue2 = class {
       /** @private */
       constructor() {
       }
@@ -153595,8 +153595,8 @@ var require_field_value = __commonJS({
         return this === other;
       }
     };
-    exports2.FieldValue = FieldValue;
-    var FieldTransform = class extends FieldValue {
+    exports2.FieldValue = FieldValue2;
+    var FieldTransform = class extends FieldValue2 {
     };
     exports2.FieldTransform = FieldTransform;
     var DeleteTransform = class extends FieldTransform {
@@ -154988,7 +154988,7 @@ var require_query_snapshot = __commonJS({
     exports2.QuerySnapshot = void 0;
     var validate_1 = require_validate();
     var util_1 = require_util21();
-    var QuerySnapshot = class _QuerySnapshot {
+    var QuerySnapshot2 = class _QuerySnapshot {
       /**
        * @private
        *
@@ -155202,7 +155202,7 @@ var require_query_snapshot = __commonJS({
         return (0, util_1.isArrayEqual)(this.docChanges(), other.docChanges()) && (0, util_1.isArrayEqual)(this.docs, other.docs);
       }
     };
-    exports2.QuerySnapshot = QuerySnapshot;
+    exports2.QuerySnapshot = QuerySnapshot2;
   }
 });
 
@@ -155212,7 +155212,7 @@ var require_filter = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.CompositeFilter = exports2.UnaryFilter = exports2.Filter = void 0;
-    var Filter = class {
+    var Filter2 = class {
       /**
        * Creates and returns a new [Filter]{@link Filter}, which can be
        * applied to [Query.where()]{@link Query#where}, [Filter.or()]{@link Filter#or},
@@ -155307,8 +155307,8 @@ var require_filter = __commonJS({
         return new CompositeFilter(filters, "AND");
       }
     };
-    exports2.Filter = Filter;
-    var UnaryFilter = class extends Filter {
+    exports2.Filter = Filter2;
+    var UnaryFilter = class extends Filter2 {
       /**
        @private
        @internal
@@ -155342,7 +155342,7 @@ var require_filter = __commonJS({
       }
     };
     exports2.UnaryFilter = UnaryFilter;
-    var CompositeFilter = class extends Filter {
+    var CompositeFilter = class extends Filter2 {
       /**
        @private
        @internal
@@ -155466,7 +155466,7 @@ var require_aggregate = __commonJS({
       }
     };
     exports2.Aggregate = Aggregate;
-    var AggregateField = class _AggregateField {
+    var AggregateField2 = class _AggregateField {
       /**
        * Create a new AggregateField<T>
        * @param aggregateType Specifies the type of aggregation operation to perform.
@@ -155515,7 +155515,7 @@ var require_aggregate = __commonJS({
         return new _AggregateField("sum", field);
       }
     };
-    exports2.AggregateField = AggregateField;
+    exports2.AggregateField = AggregateField2;
   }
 });
 
@@ -155526,7 +155526,7 @@ var require_aggregate_query_snapshot = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AggregateQuerySnapshot = void 0;
     var deepEqual = require_fast_deep_equal();
-    var AggregateQuerySnapshot = class _AggregateQuerySnapshot {
+    var AggregateQuerySnapshot2 = class _AggregateQuerySnapshot {
       /**
        * @internal
        *
@@ -155586,7 +155586,7 @@ var require_aggregate_query_snapshot = __commonJS({
         return deepEqual(this._data, other._data);
       }
     };
-    exports2.AggregateQuerySnapshot = AggregateQuerySnapshot;
+    exports2.AggregateQuerySnapshot = AggregateQuerySnapshot2;
   }
 });
 
@@ -155606,7 +155606,7 @@ var require_aggregate_query = __commonJS({
     var aggregate_query_snapshot_1 = require_aggregate_query_snapshot();
     var stream_1 = require("stream");
     var trace_util_1 = require_trace_util();
-    var AggregateQuery = class _AggregateQuery {
+    var AggregateQuery2 = class _AggregateQuery {
       /**
        * @internal
        * @param _query The query whose aggregations will be calculated by this
@@ -155846,7 +155846,7 @@ var require_aggregate_query = __commonJS({
         return new query_profile_1.ExplainResults(explainMetrics, result || null);
       }
     };
-    exports2.AggregateQuery = AggregateQuery;
+    exports2.AggregateQuery = AggregateQuery2;
   }
 });
 
@@ -175884,7 +175884,7 @@ var require_query = __commonJS({
     var order_1 = require_order();
     var types_2 = require_types2();
     var trace_util_1 = require_trace_util();
-    var Query = class _Query {
+    var Query2 = class _Query {
       /**
        * @internal
        * @private
@@ -176824,12 +176824,12 @@ var require_query = __commonJS({
             if (index_1.FieldPath.documentId().isEqual(orderBy.field)) {
               comp = doc1.ref._path.compareTo(doc2.ref._path);
             } else {
-              const v15 = doc1.protoField(orderBy.field);
+              const v16 = doc1.protoField(orderBy.field);
               const v2 = doc2.protoField(orderBy.field);
-              if (v15 === void 0 || v2 === void 0) {
+              if (v16 === void 0 || v2 === void 0) {
                 throw new Error("Trying to compare documents on fields that don't exist. Please include the fields you are ordering on in your select() call.");
               }
-              comp = (0, order_1.compare)(v15, v2);
+              comp = (0, order_1.compare)(v16, v2);
             }
             if (comp !== 0) {
               const direction = orderBy.direction === "ASCENDING" ? 1 : -1;
@@ -176902,7 +176902,7 @@ var require_query = __commonJS({
         return new query_snapshot_1.QuerySnapshot(this, readTime, size, docs, changes);
       }
     };
-    exports2.Query = Query;
+    exports2.Query = Query2;
   }
 });
 
@@ -177045,7 +177045,7 @@ var require_collection_reference = __commonJS({
     var document_reference_1 = require_document_reference();
     var query_options_1 = require_query_options();
     var trace_util_1 = require_trace_util();
-    var CollectionReference = class _CollectionReference extends query_1.Query {
+    var CollectionReference2 = class _CollectionReference extends query_1.Query {
       /**
        * @private
        *
@@ -177295,7 +177295,7 @@ var require_collection_reference = __commonJS({
         return new _CollectionReference(this.firestore, this._resourcePath, converter !== null && converter !== void 0 ? converter : (0, types_1.defaultConverter)());
       }
     };
-    exports2.CollectionReference = CollectionReference;
+    exports2.CollectionReference = CollectionReference2;
   }
 });
 
@@ -177313,7 +177313,7 @@ var require_document_reference = __commonJS({
     var validate_1 = require_validate();
     var document_1 = require_document();
     var trace_util_1 = require_trace_util();
-    var DocumentReference = class _DocumentReference {
+    var DocumentReference2 = class _DocumentReference {
       /**
        * @private
        * @internal
@@ -177765,7 +177765,7 @@ var require_document_reference = __commonJS({
         return new _DocumentReference(this.firestore, this._path, converter !== null && converter !== void 0 ? converter : (0, types_1.defaultConverter)());
       }
     };
-    exports2.DocumentReference = DocumentReference;
+    exports2.DocumentReference = DocumentReference2;
   }
 });
 
@@ -177800,11 +177800,11 @@ var require_document = __commonJS({
       build() {
         assert(this.fieldsProto !== void 0 === (this.createTime !== void 0), "Create time should be set iff document exists.");
         assert(this.fieldsProto !== void 0 === (this.updateTime !== void 0), "Update time should be set iff document exists.");
-        return this.fieldsProto ? new QueryDocumentSnapshot(this.ref, this.fieldsProto, this.readTime, this.createTime, this.updateTime) : new DocumentSnapshot(this.ref, void 0, this.readTime);
+        return this.fieldsProto ? new QueryDocumentSnapshot2(this.ref, this.fieldsProto, this.readTime, this.createTime, this.updateTime) : new DocumentSnapshot2(this.ref, void 0, this.readTime);
       }
     };
     exports2.DocumentSnapshotBuilder = DocumentSnapshotBuilder;
-    var DocumentSnapshot = class _DocumentSnapshot {
+    var DocumentSnapshot2 = class _DocumentSnapshot {
       /**
        * @private
        * @internal
@@ -178052,7 +178052,7 @@ var require_document = __commonJS({
         }
         if (this.ref._converter !== (0, types_1.defaultConverter)()) {
           const untypedReference = new document_reference_1.DocumentReference(this.ref.firestore, this.ref._path);
-          return this.ref._converter.fromFirestore(new QueryDocumentSnapshot(untypedReference, this._fieldsProto, this.readTime, this.createTime, this.updateTime));
+          return this.ref._converter.fromFirestore(new QueryDocumentSnapshot2(untypedReference, this._fieldsProto, this.readTime, this.createTime, this.updateTime));
         } else {
           const obj = {};
           for (const prop of Object.keys(fields)) {
@@ -178158,8 +178158,8 @@ var require_document = __commonJS({
         return this === other || other instanceof _DocumentSnapshot && this._ref.isEqual(other._ref) && deepEqual(this._fieldsProto, other._fieldsProto);
       }
     };
-    exports2.DocumentSnapshot = DocumentSnapshot;
-    var QueryDocumentSnapshot = class extends DocumentSnapshot {
+    exports2.DocumentSnapshot = DocumentSnapshot2;
+    var QueryDocumentSnapshot2 = class extends DocumentSnapshot2 {
       /**
        * The time the document was created.
        *
@@ -178226,7 +178226,7 @@ var require_document = __commonJS({
         return data;
       }
     };
-    exports2.QueryDocumentSnapshot = QueryDocumentSnapshot;
+    exports2.QueryDocumentSnapshot = QueryDocumentSnapshot2;
     var DocumentMask = class _DocumentMask {
       /**
        * @private
@@ -178601,7 +178601,7 @@ var require_write_batch = __commonJS({
     var util_1 = require_util21();
     var validate_1 = require_validate();
     var trace_util_1 = require_trace_util();
-    var WriteResult = class _WriteResult {
+    var WriteResult2 = class _WriteResult {
       /**
        * @private
        *
@@ -178639,8 +178639,8 @@ var require_write_batch = __commonJS({
         return this === other || other instanceof _WriteResult && this._writeTime.isEqual(other._writeTime);
       }
     };
-    exports2.WriteResult = WriteResult;
-    var WriteBatch = class {
+    exports2.WriteResult = WriteResult2;
+    var WriteBatch2 = class {
       /**
        * The number of writes in this batch.
        * @private
@@ -178976,7 +178976,7 @@ var require_write_batch = __commonJS({
           const stack = Error().stack;
           const retryCodes = [10, ...(0, util_1.getRetryCodes)("commit")];
           return this._commit({ retryCodes }).then((response) => {
-            return (response.writeResults || []).map((writeResult) => new WriteResult(timestamp_1.Timestamp.fromProto(writeResult.updateTime || response.commitTime)));
+            return (response.writeResults || []).map((writeResult) => new WriteResult2(timestamp_1.Timestamp.fromProto(writeResult.updateTime || response.commitTime)));
           }).catch((err) => {
             throw (0, util_1.wrapError)(err, stack);
           });
@@ -179021,7 +179021,7 @@ var require_write_batch = __commonJS({
         this._committed = false;
       }
     };
-    exports2.WriteBatch = WriteBatch;
+    exports2.WriteBatch = WriteBatch2;
     function validatePrecondition(arg, value, options) {
       if (typeof value !== "object" || value === null) {
         throw new Error("Input is not an object.");
@@ -179286,7 +179286,7 @@ var require_bulk_writer = __commonJS({
       }
     };
     exports2.BulkWriterError = BulkWriterError;
-    var BulkWriter = class _BulkWriter {
+    var BulkWriter2 = class _BulkWriter {
       // Visible for testing.
       /**
        * @private
@@ -179809,7 +179809,7 @@ var require_bulk_writer = __commonJS({
         }
       }
     };
-    exports2.BulkWriter = BulkWriter;
+    exports2.BulkWriter = BulkWriter2;
     function validateBulkWriterOptions(value) {
       if ((0, validate_1.validateOptional)(value, { optional: true })) {
         return;
@@ -184736,7 +184736,7 @@ var require_bundle = __commonJS({
     var timestamp_1 = require_timestamp2();
     var validate_1 = require_validate();
     var BUNDLE_VERSION = 1;
-    var BundleBuilder = class {
+    var BundleBuilder2 = class {
       constructor(bundleId) {
         this.bundleId = bundleId;
         this.documents = /* @__PURE__ */ new Map();
@@ -184863,7 +184863,7 @@ var require_bundle = __commonJS({
         return bundleBuffer;
       }
     };
-    exports2.BundleBuilder = BundleBuilder;
+    exports2.BundleBuilder = BundleBuilder2;
     function validateDocumentSnapshot(arg, value) {
       if (!(value instanceof document_1.DocumentSnapshot)) {
         throw new Error((0, validate_1.invalidArgumentMessage)(arg, "DocumentSnapshot"));
@@ -185340,7 +185340,7 @@ var require_transaction = __commonJS({
     var trace_util_1 = require_trace_util();
     var READ_AFTER_WRITE_ERROR_MSG = "Firestore transactions require all reads to be executed before all writes.";
     var READ_ONLY_WRITE_ERROR_MSG = "Firestore read-only transactions cannot execute writes.";
-    var Transaction = class {
+    var Transaction2 = class {
       /**
        * @private
        *
@@ -185759,7 +185759,7 @@ var require_transaction = __commonJS({
         return query._get(opts);
       }
     };
-    exports2.Transaction = Transaction;
+    exports2.Transaction = Transaction2;
     function parseGetAllArguments(documentRefsOrReadOptions) {
       let documents;
       let readOptions = void 0;
@@ -185839,7 +185839,7 @@ var require_query_partition = __commonJS({
     var query_options_1 = require_query_options();
     var path_1 = require_path2();
     var serializer_1 = require_serializer();
-    var QueryPartition = class {
+    var QueryPartition2 = class {
       /** @private */
       constructor(_firestore, _collectionId, _converter, _startAt, _endBefore) {
         this._firestore = _firestore;
@@ -185947,7 +185947,7 @@ var require_query_partition = __commonJS({
         return new query_1.Query(this._firestore, queryOptions);
       }
     };
-    exports2.QueryPartition = QueryPartition;
+    exports2.QueryPartition = QueryPartition2;
   }
 });
 
@@ -185967,7 +185967,7 @@ var require_collection_group = __commonJS({
     var types_1 = require_types2();
     var order_1 = require_order();
     var trace_util_1 = require_trace_util();
-    var CollectionGroup = class _CollectionGroup extends query_1.Query {
+    var CollectionGroup2 = class _CollectionGroup extends query_1.Query {
       /** @private */
       constructor(firestore, collectionId, converter) {
         super(firestore, query_options_1.QueryOptions.forCollectionGroupQuery(collectionId, converter));
@@ -186030,7 +186030,7 @@ var require_collection_group = __commonJS({
         return new _CollectionGroup(this.firestore, this._queryOptions.collectionId, converter !== null && converter !== void 0 ? converter : (0, types_1.defaultConverter)());
       }
     };
-    exports2.CollectionGroup = CollectionGroup;
+    exports2.CollectionGroup = CollectionGroup2;
   }
 });
 
@@ -192257,7 +192257,7 @@ var require_src29 = __commonJS({
     exports2.DEFAULT_MAX_TRANSACTION_ATTEMPTS = 5;
     exports2.DEFAULT_MAX_IDLE_CHANNELS = 1;
     var MAX_CONCURRENT_REQUESTS_PER_CLIENT = 100;
-    var Firestore = class {
+    var Firestore2 = class {
       /**
        * Lazy-load the Firestore's default BulkWriter.
        *
@@ -193257,10 +193257,10 @@ var require_src29 = __commonJS({
         });
       }
     };
-    exports2.Firestore = Firestore;
-    exports2.default = Firestore;
+    exports2.Firestore = Firestore2;
+    exports2.default = Firestore2;
     var existingExports = module2.exports;
-    module2.exports = Firestore;
+    module2.exports = Firestore2;
     module2.exports = Object.assign(module2.exports, existingExports);
     Object.defineProperty(module2.exports, "v1beta1", {
       // The v1beta1 module is very large. To avoid pulling it in from static
@@ -197545,8 +197545,8 @@ var require_firestore = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.FirebaseFirestoreError = exports2.setLogFunction = exports2.v1 = exports2.WriteResult = exports2.WriteBatch = exports2.Transaction = exports2.Timestamp = exports2.QuerySnapshot = exports2.QueryPartition = exports2.QueryDocumentSnapshot = exports2.Query = exports2.GrpcStatus = exports2.GeoPoint = exports2.Firestore = exports2.Filter = exports2.FieldValue = exports2.FieldPath = exports2.DocumentSnapshot = exports2.DocumentReference = exports2.CollectionReference = exports2.CollectionGroup = exports2.BundleBuilder = exports2.BulkWriter = exports2.AggregateQuerySnapshot = exports2.AggregateQuery = exports2.AggregateField = void 0;
-    exports2.getFirestore = getFirestore;
-    exports2.initializeFirestore = initializeFirestore;
+    exports2.getFirestore = getFirestore2;
+    exports2.initializeFirestore = initializeFirestore2;
     var app_1 = require_app();
     var firestore_internal_1 = require_firestore_internal();
     var path_1 = require_path2();
@@ -197626,14 +197626,14 @@ var require_firestore = __commonJS({
     Object.defineProperty(exports2, "setLogFunction", { enumerable: true, get: function() {
       return firestore_1.setLogFunction;
     } });
-    function getFirestore(appOrDatabaseId, optionalDatabaseId) {
+    function getFirestore2(appOrDatabaseId, optionalDatabaseId) {
       const app = typeof appOrDatabaseId === "object" ? appOrDatabaseId : (0, app_1.getApp)();
       const databaseId = (typeof appOrDatabaseId === "string" ? appOrDatabaseId : optionalDatabaseId) || path_1.DEFAULT_DATABASE_ID;
       const firebaseApp = app;
       const firestoreService = firebaseApp.getOrInitService("firestore", (app2) => new firestore_internal_1.FirestoreService(app2));
       return firestoreService.getDatabase(databaseId);
     }
-    function initializeFirestore(app, settings, databaseId) {
+    function initializeFirestore2(app, settings, databaseId) {
       settings ?? (settings = {});
       databaseId ?? (databaseId = path_1.DEFAULT_DATABASE_ID);
       const firebaseApp = app;
@@ -198140,6 +198140,73 @@ https://firebase.google.com/docs/web/setup
       console.error(message);
     }
     module2.exports = firebase;
+  }
+});
+
+// node_modules/firebase-admin/lib/esm/firestore/index.js
+var firestore_exports = {};
+__export(firestore_exports, {
+  AggregateField: () => AggregateField,
+  AggregateQuery: () => AggregateQuery,
+  AggregateQuerySnapshot: () => AggregateQuerySnapshot,
+  BulkWriter: () => BulkWriter,
+  BundleBuilder: () => BundleBuilder,
+  CollectionGroup: () => CollectionGroup,
+  CollectionReference: () => CollectionReference,
+  DocumentReference: () => DocumentReference,
+  DocumentSnapshot: () => DocumentSnapshot,
+  FieldPath: () => FieldPath,
+  FieldValue: () => FieldValue,
+  Filter: () => Filter,
+  FirebaseFirestoreError: () => FirebaseFirestoreError,
+  Firestore: () => Firestore,
+  GeoPoint: () => GeoPoint,
+  GrpcStatus: () => GrpcStatus,
+  Query: () => Query,
+  QueryDocumentSnapshot: () => QueryDocumentSnapshot,
+  QueryPartition: () => QueryPartition,
+  QuerySnapshot: () => QuerySnapshot,
+  Timestamp: () => Timestamp,
+  Transaction: () => Transaction,
+  WriteBatch: () => WriteBatch,
+  WriteResult: () => WriteResult,
+  getFirestore: () => getFirestore,
+  initializeFirestore: () => initializeFirestore,
+  setLogFunction: () => setLogFunction,
+  v1: () => v15
+});
+var import_firestore, AggregateField, AggregateQuery, AggregateQuerySnapshot, BulkWriter, BundleBuilder, CollectionGroup, CollectionReference, DocumentReference, DocumentSnapshot, FieldPath, FieldValue, Filter, FirebaseFirestoreError, Firestore, GeoPoint, GrpcStatus, Query, QueryDocumentSnapshot, QueryPartition, QuerySnapshot, Timestamp, Transaction, WriteBatch, WriteResult, getFirestore, initializeFirestore, setLogFunction, v15;
+var init_firestore = __esm({
+  "node_modules/firebase-admin/lib/esm/firestore/index.js"() {
+    import_firestore = __toESM(require_firestore(), 1);
+    AggregateField = import_firestore.default.AggregateField;
+    AggregateQuery = import_firestore.default.AggregateQuery;
+    AggregateQuerySnapshot = import_firestore.default.AggregateQuerySnapshot;
+    BulkWriter = import_firestore.default.BulkWriter;
+    BundleBuilder = import_firestore.default.BundleBuilder;
+    CollectionGroup = import_firestore.default.CollectionGroup;
+    CollectionReference = import_firestore.default.CollectionReference;
+    DocumentReference = import_firestore.default.DocumentReference;
+    DocumentSnapshot = import_firestore.default.DocumentSnapshot;
+    FieldPath = import_firestore.default.FieldPath;
+    FieldValue = import_firestore.default.FieldValue;
+    Filter = import_firestore.default.Filter;
+    FirebaseFirestoreError = import_firestore.default.FirebaseFirestoreError;
+    Firestore = import_firestore.default.Firestore;
+    GeoPoint = import_firestore.default.GeoPoint;
+    GrpcStatus = import_firestore.default.GrpcStatus;
+    Query = import_firestore.default.Query;
+    QueryDocumentSnapshot = import_firestore.default.QueryDocumentSnapshot;
+    QueryPartition = import_firestore.default.QueryPartition;
+    QuerySnapshot = import_firestore.default.QuerySnapshot;
+    Timestamp = import_firestore.default.Timestamp;
+    Transaction = import_firestore.default.Transaction;
+    WriteBatch = import_firestore.default.WriteBatch;
+    WriteResult = import_firestore.default.WriteResult;
+    getFirestore = import_firestore.default.getFirestore;
+    initializeFirestore = import_firestore.default.initializeFirestore;
+    setLogFunction = import_firestore.default.setLogFunction;
+    v15 = import_firestore.default.v1;
   }
 });
 
@@ -206836,14 +206903,18 @@ async function createHistoryStore(opts) {
   }
   try {
     const admin = await Promise.resolve().then(() => __toESM(require_lib6(), 1));
-    if (admin.apps.length === 0) {
-      admin.initializeApp({
+    const { getFirestore: getFirestore2 } = await Promise.resolve().then(() => (init_firestore(), firestore_exports));
+    let app = admin.apps[0];
+    if (!app) {
+      app = admin.initializeApp({
         credential: admin.credential.cert(parsed),
         projectId: opts.projectId || parsed.project_id
       });
     }
-    const db = admin.firestore();
+    const databaseId = opts.databaseId?.trim() || "(default)";
+    const db = getFirestore2(app, databaseId);
     db.settings({ ignoreUndefinedProperties: true });
+    log.info(`Firestore initialised: project=${app.options.projectId}, database=${databaseId}`);
     return new FirestoreHistoryStore({ firestore: db });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
@@ -206948,6 +207019,7 @@ async function run() {
     const resultsDirInput = getInput("results-dir");
     const firestoreCredentials = getInput("firestore-credentials");
     const firestoreProjectId = getInput("firestore-project-id");
+    const firestoreDatabaseId = getInput("firestore-database-id");
     const historyLimit = Number(getInput("history-limit") || "10");
     process.env.ANTHROPIC_API_KEY = anthropicApiKey;
     const octokit = getOctokit(githubToken);
@@ -206973,6 +207045,7 @@ async function run() {
     const historyStore = await createHistoryStore({
       credentialsJson: firestoreCredentials,
       projectId: firestoreProjectId || void 0,
+      databaseId: firestoreDatabaseId || void 0,
       log: { info, warning }
     });
     const rawScored = scoreTestResults(allResults);
