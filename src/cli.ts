@@ -4,6 +4,10 @@ import { analyzeFailures } from './analyzer/index.js';
 import { createClaudeProvider } from './analyzer/providers/claude.js';
 import { formatReport, type ReportFormat } from './reporter/index.js';
 import { FirestoreHistoryStore, testKeyFor } from './history/index.js';
+import { readQuarantineFile } from './quarantine/file.js';
+import { filterJunitXml } from './quarantine/filterJunit.js';
+import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
+import { resolve, join } from 'node:path';
 
 const [command, ...args] = process.argv.slice(2);
 
@@ -98,6 +102,36 @@ if (command === 'parse') {
   const provider = createClaudeProvider();
   const analyzed = await analyzeFailures(scored, provider);
   console.log(formatReport(analyzed, formatArg));
+} else if (command === 'filter-junit') {
+  const xmlPath = args[0];
+  const quarantinePath = args[1] ?? '.flaky-quarantine.json';
+  if (!xmlPath) {
+    console.error('Usage: flaky-triager filter-junit <xml-file-or-dir> [quarantine-file]');
+    console.error('  Rewrites the JUnit XML so quarantined-test failures become skipped.');
+    console.error('  Files are modified in place.');
+    process.exit(1);
+  }
+  const q = readQuarantineFile(resolve(quarantinePath));
+  const targets: string[] = [];
+  const xmlAbs = resolve(xmlPath);
+  if (statSync(xmlAbs).isDirectory()) {
+    for (const f of readdirSync(xmlAbs)) {
+      if (f.endsWith('.xml')) targets.push(join(xmlAbs, f));
+    }
+  } else {
+    targets.push(xmlAbs);
+  }
+  let totalSkipped = 0;
+  for (const file of targets) {
+    const xml = readFileSync(file, 'utf-8');
+    const { xml: out, skippedCount } = filterJunitXml(xml, q);
+    if (skippedCount > 0) {
+      writeFileSync(file, out, 'utf-8');
+      console.log(`  ${file}: demoted ${skippedCount} quarantined failure(s) to skipped`);
+      totalSkipped += skippedCount;
+    }
+  }
+  console.log(`\nTotal demoted: ${totalSkipped}`);
 } else if (command === 'history') {
   const suite = args[0];
   const testName = args[1];
@@ -123,5 +157,5 @@ if (command === 'parse') {
     }
   }
 } else {
-  console.log('Usage: flaky-triager <parse|score|analyze|report|history> ...');
+  console.log('Usage: flaky-triager <parse|score|analyze|report|history|filter-junit> ...');
 }

@@ -43,6 +43,8 @@ outputs:
     description: 'Number of tests with an inconclusive verdict.'
   report-markdown:
     description: 'Full markdown report posted to the PR (also available in the workflow logs).'
+  quarantine-pr-url:
+    description: 'URL of the quarantine recommendations PR, if one was created or updated.'
 
 runs:
   using: 'node20'

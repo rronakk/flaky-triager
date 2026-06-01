@@ -16,6 +16,10 @@ import {
   type HistoryStore,
   type TestRunRecord,
 } from './history/index.js';
+import { recommendQuarantine } from './quarantine/recommender.js';
+import { openOrUpdateQuarantinePr } from './quarantine/prCreator.js';
+import { emptyQuarantine, type Quarantine } from './quarantine/file.js';
+import { QUARANTINE_FILE_PATH } from './quarantine/prFormatter.js';
 
 type Octokit = ReturnType<typeof github.getOctokit>;
 
@@ -102,6 +106,34 @@ function resolveShaAndBranch(): { sha: string; branch: string } {
   return { sha: context.sha || 'unknown', branch };
 }
 
+async function loadQuarantineFromDefaultBranch(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+): Promise<Quarantine> {
+  try {
+    const { data: repoData } = await octokit.rest.repos.get({ owner, repo });
+    const branch = repoData.default_branch;
+    const { data } = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: QUARANTINE_FILE_PATH,
+      ref: branch,
+    });
+    if (Array.isArray(data) || data.type !== 'file' || !('content' in data)) {
+      return emptyQuarantine();
+    }
+    const decoded = Buffer.from(data.content, 'base64').toString('utf-8');
+    const parsed = JSON.parse(decoded) as Quarantine;
+    if (!Array.isArray(parsed.entries)) return emptyQuarantine();
+    return { version: 1, entries: parsed.entries };
+  } catch (err) {
+    const status = (err as { status?: number }).status;
+    if (status === 404) return emptyQuarantine();
+    throw err;
+  }
+}
+
 async function loadHistoryForKeys(
   store: HistoryStore,
   keys: string[],
@@ -186,13 +218,61 @@ async function run(): Promise<void> {
 
     const provider = createClaudeProvider();
     const analyzed = await analyzeFailures(scored, provider);
-    const markdown = formatReport(analyzed, 'markdown');
+    const reportMarkdown = formatReport(analyzed, 'markdown');
     const summary = summarize(analyzed);
+
+    let quarantineSection = '';
+    let quarantinePrUrl: string | undefined;
+
+    if (summary.flaky > 0) {
+      try {
+        const currentQuarantine = await loadQuarantineFromDefaultBranch(octokit, owner, repo);
+        const candidates = recommendQuarantine(analyzed, currentQuarantine);
+        if (candidates.length > 0) {
+          core.info(`Recommending ${candidates.length} test(s) for quarantine.`);
+          const prNumber = resolvePrNumber();
+          const sourcePrUrl =
+            prNumber !== undefined ? `https://github.com/${owner}/${repo}/pull/${prNumber}` : undefined;
+          const result = await openOrUpdateQuarantinePr({
+            octokit,
+            owner,
+            repo,
+            candidates,
+            sourcePrNumber: prNumber,
+            sourcePrUrl,
+          });
+          if (result) {
+            quarantinePrUrl = result.htmlUrl;
+            core.info(
+              `${result.created ? 'Created' : 'Updated'} quarantine PR #${result.number}: ${result.htmlUrl}`,
+            );
+          }
+          quarantineSection = [
+            '',
+            '## Quarantine recommendations',
+            '',
+            `${candidates.length} flaky test(s) recommended for quarantine.`,
+            quarantinePrUrl ? `Review and merge: [quarantine PR](${quarantinePrUrl})` : '',
+            '',
+          ]
+            .filter(Boolean)
+            .join('\n');
+        } else {
+          core.info('No new quarantine candidates (all flaky tests already quarantined).');
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        core.warning(`Quarantine flow failed: ${msg}`);
+      }
+    }
+
+    const markdown = reportMarkdown + quarantineSection;
 
     core.setOutput('flaky-count', summary.flaky);
     core.setOutput('break-count', summary.realBreaks);
     core.setOutput('inconclusive-count', summary.inconclusive);
     core.setOutput('report-markdown', markdown);
+    if (quarantinePrUrl) core.setOutput('quarantine-pr-url', quarantinePrUrl);
 
     core.info('--- Report ---');
     core.info(markdown);

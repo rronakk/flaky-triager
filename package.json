@@ -11,6 +11,7 @@
     "analyze": "tsx src/cli.ts analyze",
     "report": "tsx src/cli.ts report",
     "history": "tsx src/cli.ts history",
+    "filter-junit": "tsx src/cli.ts filter-junit",
     "bundle:action": "esbuild src/action.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/action.cjs"
   },
   "bin": {

@@ -206937,6 +206937,211 @@ function recordsFromScored(scored, meta) {
   }));
 }
 
+// src/quarantine/file.ts
+function emptyQuarantine() {
+  return { version: 1, entries: [] };
+}
+function isQuarantined(q, suite, testName) {
+  return q.entries.some((e2) => e2.suite === suite && e2.testName === testName);
+}
+function addEntries(q, entries) {
+  const out = [...q.entries];
+  const seen = new Set(out.map((e2) => `${e2.suite}::${e2.testName}`));
+  for (const e2 of entries) {
+    const key = `${e2.suite}::${e2.testName}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(e2);
+  }
+  return { version: 1, entries: out };
+}
+
+// src/quarantine/recommender.ts
+var RECOMMEND_MIN_SCORE = 70;
+function recommendQuarantine(results, quarantine, opts = {}) {
+  const minScore = opts.minScore ?? RECOMMEND_MIN_SCORE;
+  const now = opts.now ?? (() => /* @__PURE__ */ new Date());
+  const addedAt = now().toISOString();
+  const candidates = [];
+  for (const r2 of results) {
+    if (r2.verdict !== "flaky") continue;
+    if (r2.flakinessScore < minScore) continue;
+    if (isQuarantined(quarantine, r2.suite, r2.testName)) continue;
+    candidates.push({
+      suite: r2.suite,
+      testName: r2.testName,
+      addedAt,
+      verdict: r2.verdict,
+      flakinessScore: r2.flakinessScore,
+      reason: `Failed ${r2.failures}/${r2.totalRuns} runs (flakiness score ${r2.flakinessScore}).${r2.analysis ? ` ${r2.analysis.rootCauseCategory}: ${r2.analysis.explanation}` : ""}`
+    });
+  }
+  return candidates;
+}
+
+// src/quarantine/prFormatter.ts
+var QUARANTINE_PR_MARKER = "<!-- flaky-triager:quarantine-pr -->";
+var QUARANTINE_BRANCH = "flaky-triager/quarantine";
+var QUARANTINE_FILE_PATH = ".flaky-quarantine.json";
+function formatQuarantinePrBody(inputs) {
+  const { candidates, sourcePrNumber, sourcePrUrl } = inputs;
+  const tableRows = candidates.map((c) => `| \`${c.suite} > ${c.testName}\` | ${c.flakinessScore} | ${c.reason} |`).join("\n");
+  const sources = sourcePrNumber ? `
+**Detected on:** ${sourcePrUrl ? `[#${sourcePrNumber}](${sourcePrUrl})` : `#${sourcePrNumber}`}
+` : "";
+  return [
+    QUARANTINE_PR_MARKER,
+    "## Quarantine recommendations",
+    "",
+    "flaky-triager has detected the following tests as flaky on recent CI runs and recommends adding them to `.flaky-quarantine.json` so they no longer block builds.",
+    sources,
+    "| Test | Score | Reason |",
+    "| --- | --- | --- |",
+    tableRows,
+    "",
+    "**Review checklist:**",
+    "- [ ] The flake is real (not a real failure being masked)",
+    "- [ ] An issue or ticket exists to track fixing the underlying cause",
+    "- [ ] Merge to skip these tests in CI, or close this PR to dismiss the recommendation",
+    ""
+  ].join("\n");
+}
+function quarantinePrTitle(count) {
+  const suffix = count === 1 ? "test" : "tests";
+  return `flaky-triager: quarantine ${count} ${suffix}`;
+}
+
+// src/quarantine/prCreator.ts
+async function getDefaultBranch(octokit, owner, repo) {
+  const { data } = await octokit.rest.repos.get({ owner, repo });
+  return data.default_branch;
+}
+async function getBranchHeadSha(octokit, owner, repo, branch) {
+  const { data } = await octokit.rest.git.getRef({ owner, repo, ref: `heads/${branch}` });
+  return data.object.sha;
+}
+async function getCurrentQuarantineFromBranch(octokit, owner, repo, branch) {
+  try {
+    const { data } = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: QUARANTINE_FILE_PATH,
+      ref: branch
+    });
+    if (Array.isArray(data) || data.type !== "file" || !("content" in data)) {
+      return emptyQuarantine();
+    }
+    const decoded = Buffer.from(data.content, "base64").toString("utf-8");
+    const parsed = JSON.parse(decoded);
+    if (!Array.isArray(parsed.entries)) return emptyQuarantine();
+    return { version: 1, entries: parsed.entries };
+  } catch (err) {
+    const status = err.status;
+    if (status === 404) return emptyQuarantine();
+    throw err;
+  }
+}
+async function findExistingQuarantinePr(octokit, owner, repo) {
+  const { data } = await octokit.rest.pulls.list({
+    owner,
+    repo,
+    state: "open",
+    head: `${owner}:${QUARANTINE_BRANCH}`,
+    per_page: 1
+  });
+  if (data.length === 0) return null;
+  return { number: data[0].number, htmlUrl: data[0].html_url };
+}
+async function upsertBranchWithFile(octokit, owner, repo, baseSha, fileContent, message) {
+  const blob = await octokit.rest.git.createBlob({
+    owner,
+    repo,
+    content: fileContent,
+    encoding: "utf-8"
+  });
+  const tree = await octokit.rest.git.createTree({
+    owner,
+    repo,
+    base_tree: baseSha,
+    tree: [
+      {
+        path: QUARANTINE_FILE_PATH,
+        mode: "100644",
+        type: "blob",
+        sha: blob.data.sha
+      }
+    ]
+  });
+  const commit = await octokit.rest.git.createCommit({
+    owner,
+    repo,
+    message,
+    tree: tree.data.sha,
+    parents: [baseSha]
+  });
+  try {
+    await octokit.rest.git.updateRef({
+      owner,
+      repo,
+      ref: `heads/${QUARANTINE_BRANCH}`,
+      sha: commit.data.sha,
+      force: true
+    });
+  } catch (err) {
+    const status = err.status;
+    if (status === 422) {
+      await octokit.rest.git.createRef({
+        owner,
+        repo,
+        ref: `refs/heads/${QUARANTINE_BRANCH}`,
+        sha: commit.data.sha
+      });
+    } else {
+      throw err;
+    }
+  }
+  return commit.data.sha;
+}
+async function openOrUpdateQuarantinePr(opts) {
+  const { octokit, owner, repo, candidates, sourcePrNumber, sourcePrUrl } = opts;
+  if (candidates.length === 0) return null;
+  const defaultBranch = await getDefaultBranch(octokit, owner, repo);
+  const defaultSha = await getBranchHeadSha(octokit, owner, repo, defaultBranch);
+  const current = await getCurrentQuarantineFromBranch(octokit, owner, repo, defaultBranch);
+  const updated = addEntries(current, candidates);
+  const fileContent = JSON.stringify(updated, null, 2) + "\n";
+  await upsertBranchWithFile(
+    octokit,
+    owner,
+    repo,
+    defaultSha,
+    fileContent,
+    `chore: quarantine ${candidates.length} flaky test(s)`
+  );
+  const body = formatQuarantinePrBody({ candidates, sourcePrNumber, sourcePrUrl });
+  const title = quarantinePrTitle(updated.entries.length);
+  const existing = await findExistingQuarantinePr(octokit, owner, repo);
+  if (existing) {
+    await octokit.rest.pulls.update({
+      owner,
+      repo,
+      pull_number: existing.number,
+      title,
+      body
+    });
+    return { number: existing.number, htmlUrl: existing.htmlUrl, created: false };
+  }
+  const { data } = await octokit.rest.pulls.create({
+    owner,
+    repo,
+    head: QUARANTINE_BRANCH,
+    base: defaultBranch,
+    title,
+    body
+  });
+  return { number: data.number, htmlUrl: data.html_url, created: true };
+}
+
 // src/action.ts
 async function downloadArtifactToDir(octokit, owner, repo, runId, artifactName) {
   const artifacts = await octokit.rest.actions.listWorkflowRunArtifacts({
@@ -207000,6 +207205,29 @@ function resolveShaAndBranch() {
   }
   const branch = context4.ref?.replace(/^refs\/heads\//, "") || "unknown";
   return { sha: context4.sha || "unknown", branch };
+}
+async function loadQuarantineFromDefaultBranch(octokit, owner, repo) {
+  try {
+    const { data: repoData } = await octokit.rest.repos.get({ owner, repo });
+    const branch = repoData.default_branch;
+    const { data } = await octokit.rest.repos.getContent({
+      owner,
+      repo,
+      path: QUARANTINE_FILE_PATH,
+      ref: branch
+    });
+    if (Array.isArray(data) || data.type !== "file" || !("content" in data)) {
+      return emptyQuarantine();
+    }
+    const decoded = Buffer.from(data.content, "base64").toString("utf-8");
+    const parsed = JSON.parse(decoded);
+    if (!Array.isArray(parsed.entries)) return emptyQuarantine();
+    return { version: 1, entries: parsed.entries };
+  } catch (err) {
+    const status = err.status;
+    if (status === 404) return emptyQuarantine();
+    throw err;
+  }
 }
 async function loadHistoryForKeys(store, keys, limit2) {
   const map = /* @__PURE__ */ new Map();
@@ -207065,12 +207293,54 @@ async function run() {
     }
     const provider = createClaudeProvider();
     const analyzed = await analyzeFailures(scored, provider);
-    const markdown = formatReport(analyzed, "markdown");
+    const reportMarkdown = formatReport(analyzed, "markdown");
     const summary2 = summarize(analyzed);
+    let quarantineSection = "";
+    let quarantinePrUrl;
+    if (summary2.flaky > 0) {
+      try {
+        const currentQuarantine = await loadQuarantineFromDefaultBranch(octokit, owner, repo);
+        const candidates = recommendQuarantine(analyzed, currentQuarantine);
+        if (candidates.length > 0) {
+          info(`Recommending ${candidates.length} test(s) for quarantine.`);
+          const prNumber2 = resolvePrNumber();
+          const sourcePrUrl = prNumber2 !== void 0 ? `https://github.com/${owner}/${repo}/pull/${prNumber2}` : void 0;
+          const result = await openOrUpdateQuarantinePr({
+            octokit,
+            owner,
+            repo,
+            candidates,
+            sourcePrNumber: prNumber2,
+            sourcePrUrl
+          });
+          if (result) {
+            quarantinePrUrl = result.htmlUrl;
+            info(
+              `${result.created ? "Created" : "Updated"} quarantine PR #${result.number}: ${result.htmlUrl}`
+            );
+          }
+          quarantineSection = [
+            "",
+            "## Quarantine recommendations",
+            "",
+            `${candidates.length} flaky test(s) recommended for quarantine.`,
+            quarantinePrUrl ? `Review and merge: [quarantine PR](${quarantinePrUrl})` : "",
+            ""
+          ].filter(Boolean).join("\n");
+        } else {
+          info("No new quarantine candidates (all flaky tests already quarantined).");
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        warning(`Quarantine flow failed: ${msg}`);
+      }
+    }
+    const markdown = reportMarkdown + quarantineSection;
     setOutput("flaky-count", summary2.flaky);
     setOutput("break-count", summary2.realBreaks);
     setOutput("inconclusive-count", summary2.inconclusive);
     setOutput("report-markdown", markdown);
+    if (quarantinePrUrl) setOutput("quarantine-pr-url", quarantinePrUrl);
     info("--- Report ---");
     info(markdown);
     const prNumber = resolvePrNumber();
