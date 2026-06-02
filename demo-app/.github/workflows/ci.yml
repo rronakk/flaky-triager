@@ -41,6 +41,12 @@ jobs:
         run: npx playwright test
         continue-on-error: true
 
+      - name: Filter quarantined failures from JUnit XML
+        if: always()
+        run: |
+          curl -sSL https://raw.githubusercontent.com/rronakk/flaky-triager/main/dist/filter-junit.cjs -o /tmp/filter-junit.cjs
+          node /tmp/filter-junit.cjs test-results .flaky-quarantine.json
+
       - name: Upload JUnit XML results
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "suite": "tests/unit/formatting.test.ts",
+      "testName": "display history (FLAKY: test-order dependency) > should show recently displayed tasks",
+      "addedAt": "2026-06-01T00:00:00Z",
+      "verdict": "flaky",
+      "flakinessScore": 85,
+      "reason": "Manual quarantine to validate filter-junit CI integration"
+    }
+  ]
+}
