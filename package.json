@@ -12,7 +12,8 @@
     "report": "tsx src/cli.ts report",
     "history": "tsx src/cli.ts history",
     "filter-junit": "tsx src/cli.ts filter-junit",
-    "bundle:action": "esbuild src/action.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/action.cjs"
+    "bundle:action": "esbuild src/action.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/action.cjs",
+    "bundle:filter-junit": "esbuild src/filter-junit-cli.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/filter-junit.cjs"
   },
   "bin": {
     "flaky-triager": "./dist/cli.js"
