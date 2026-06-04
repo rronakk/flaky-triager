@@ -1,16 +1,23 @@
 import { describe, it } from 'vitest';
 
 /**
- * Intentionally non-deterministic test for validating the flaky-triager's
- * quarantine recommendation pipeline. Math.random() < 0.5 throws, so with
- * vitest's retry: 2 (configured in vitest.config.ts), a single run will
- * exhibit same-SHA pass-then-fail divergence — verdict=flaky — about 75%
- * of the time. Delete this file to remove the planted flake.
+ * Deterministic flake for validating the flaky-triager. Always fails on
+ * the first attempt within a test run, then passes on retry — guarantees
+ * same-SHA pass/fail divergence so the scorer classifies this as flaky on
+ * every run, no Math.random dice-rolling. Delete this file to remove the
+ * planted flake.
+ *
+ * The module-level `didFailOnce` flag persists across vitest's retry
+ * attempts (same worker process, same module instance) but resets between
+ * runs.
  */
-describe('genuinely flaky (planted for triager validation)', () => {
-  it('flakes about half the time via Math.random', () => {
-    if (Math.random() < 0.5) {
-      throw new Error('Random flake — planted to exercise flaky-triager');
+let didFailOnce = false;
+
+describe('deterministic flake (planted for triager validation)', () => {
+  it('fails on first attempt, passes on retry', () => {
+    if (!didFailOnce) {
+      didFailOnce = true;
+      throw new Error('Planted: deterministic first-attempt failure for triager');
     }
   });
 });
