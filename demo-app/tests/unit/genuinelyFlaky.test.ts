@@ -1,23 +1,24 @@
 import { describe, it } from 'vitest';
 
 /**
- * Deterministic flake for validating the flaky-triager. Always fails on
- * the first attempt within a test run, then passes on retry — guarantees
- * same-SHA pass/fail divergence so the scorer classifies this as flaky on
- * every run, no Math.random dice-rolling. Delete this file to remove the
- * planted flake.
+ * Planted intermittent flake for validating the flaky-triager's
+ * recommender + PR-creator path.
  *
- * The module-level `didFailOnce` flag persists across vitest's retry
- * attempts (same worker process, same module instance) but resets between
- * runs.
+ * Why `retry: 0`: vitest's default JUnit reporter only records the FINAL
+ * outcome of a retried test. If the test fails attempt 1 and passes
+ * attempt 2, the XML shows it as passing with no failure element — our
+ * scorer would see no within-run divergence and classify it as passing.
+ * Disabling retries on this test means its actual outcome (pass OR fail)
+ * lands in the XML. Across runs, history accumulates mixed pass/fail,
+ * and the Phase 7 history upgrade promotes inconclusive verdicts to
+ * flaky after 2-3 runs.
+ *
+ * Delete this file to remove the planted flake.
  */
-let didFailOnce = false;
-
-describe('deterministic flake (planted for triager validation)', () => {
-  it('fails on first attempt, passes on retry', () => {
-    if (!didFailOnce) {
-      didFailOnce = true;
-      throw new Error('Planted: deterministic first-attempt failure for triager');
+describe('intermittent flake (planted for triager validation)', () => {
+  it('fails about half the time, no retries', { retry: 0 }, () => {
+    if (Math.random() < 0.5) {
+      throw new Error('Planted intermittent flake — Math.random() < 0.5');
     }
   });
 });
