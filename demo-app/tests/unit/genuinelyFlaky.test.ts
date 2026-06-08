@@ -16,9 +16,12 @@ import { describe, it } from 'vitest';
  * Delete this file to remove the planted flake.
  */
 describe('intermittent flake (planted for triager validation)', () => {
+  // Keeping the same test name as the earlier Math.random version preserves
+  // the testKey, so the Firestore history (which has multiple passing AND
+  // inconclusive records from prior runs) carries over. With current verdict
+  // = inconclusive + history showing pass+incon, the scorer's upgrade rule
+  // fires → verdict = flaky → recommender → quarantine PR.
   it('fails about half the time, no retries', { retry: 0 }, () => {
-    if (Math.random() < 0.5) {
-      throw new Error('Planted intermittent flake — Math.random() < 0.5');
-    }
+    throw new Error('Planted failure (deterministic) — validates quarantine PR creation');
   });
 });
