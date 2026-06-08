@@ -8,6 +8,8 @@ export interface TestRunRecord {
   suite: string;
   verdict: Verdict;
   failureMessage?: string;
+  /** True when at least one attempt this run was demoted to skipped (e.g. by filter-junit). */
+  wasSkipped?: boolean;
 }
 
 export interface HistoryStore {

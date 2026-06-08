@@ -90,6 +90,22 @@ describe('scoreTestResults', () => {
     expect(flaky).toHaveLength(1);
   });
 
+  it('sets wasSkipped=true when an attempt was skipped (e.g., filter-junit demotion)', () => {
+    const results = [
+      makeResult({ testName: 'quarantined test', status: 'skipped' }),
+    ];
+    const scored = scoreTestResults(results);
+    expect(scored).toHaveLength(1);
+    expect(scored[0].wasSkipped).toBe(true);
+    expect(scored[0].verdict).toBe('passing');
+  });
+
+  it('omits wasSkipped when no attempt was skipped', () => {
+    const results = [makeResult({ testName: 'normal pass', status: 'passed' })];
+    const scored = scoreTestResults(results);
+    expect(scored[0].wasSkipped).toBeUndefined();
+  });
+
   it('preserves failure message from the first failure', () => {
     const results = [
       makeResult({ testName: 'test', status: 'failed', retryIndex: 0, failureMessage: 'first error', stackTrace: 'at line 5' }),

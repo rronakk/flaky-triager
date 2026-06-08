@@ -17,7 +17,14 @@ import {
   type TestRunRecord,
 } from './history/index.js';
 import { recommendQuarantine } from './quarantine/recommender.js';
-import { openOrUpdateQuarantinePr } from './quarantine/prCreator.js';
+import {
+  recommendUnQuarantine,
+  RECOMMEND_MIN_PASSES,
+} from './quarantine/unQuarantineRecommender.js';
+import {
+  openOrUpdateQuarantinePr,
+  openOrUpdateUnQuarantinePr,
+} from './quarantine/prCreator.js';
 import { emptyQuarantine, type Quarantine } from './quarantine/file.js';
 import { QUARANTINE_FILE_PATH } from './quarantine/prFormatter.js';
 
@@ -159,6 +166,9 @@ async function run(): Promise<void> {
     const firestoreProjectId = core.getInput('firestore-project-id');
     const firestoreDatabaseId = core.getInput('firestore-database-id');
     const historyLimit = Number(core.getInput('history-limit') || '10');
+    const unQuarantineMinPasses = Number(
+      core.getInput('un-quarantine-min-passes') || String(RECOMMEND_MIN_PASSES),
+    );
 
     process.env.ANTHROPIC_API_KEY = anthropicApiKey;
 
@@ -223,10 +233,24 @@ async function run(): Promise<void> {
 
     let quarantineSection = '';
     let quarantinePrUrl: string | undefined;
+    let unQuarantineSection = '';
+    let unQuarantinePrUrl: string | undefined;
+
+    // Load the canonical quarantine file once for both add (recommender) and
+    // remove (un-quarantine) flows so we only hit the GitHub contents API once.
+    let currentQuarantine: Quarantine = emptyQuarantine();
+    try {
+      currentQuarantine = await loadQuarantineFromDefaultBranch(octokit, owner, repo);
+    } catch (err) {
+      core.warning(
+        `Failed to load .flaky-quarantine.json from default branch: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
+    }
 
     if (summary.flaky > 0) {
       try {
-        const currentQuarantine = await loadQuarantineFromDefaultBranch(octokit, owner, repo);
         const candidates = recommendQuarantine(analyzed, currentQuarantine);
         if (candidates.length > 0) {
           core.info(`Recommending ${candidates.length} test(s) for quarantine.`);
@@ -266,13 +290,73 @@ async function run(): Promise<void> {
       }
     }
 
-    const markdown = reportMarkdown + quarantineSection;
+    if (historyStore && currentQuarantine.entries.length > 0) {
+      try {
+        const quarantineKeys = currentQuarantine.entries.map((e) =>
+          testKeyFor(e.suite, e.testName),
+        );
+        const unQuarantineHistory = await loadHistoryForKeys(
+          historyStore,
+          quarantineKeys,
+          Math.max(unQuarantineMinPasses + 1, historyLimit),
+        ).catch((err) => {
+          core.warning(
+            `Failed to load history for un-quarantine: ${
+              err instanceof Error ? err.message : String(err)
+            }`,
+          );
+          return new Map<string, TestRunRecord[]>();
+        });
+        const removals = recommendUnQuarantine(currentQuarantine, unQuarantineHistory, {
+          minPasses: unQuarantineMinPasses,
+        });
+        if (removals.length > 0) {
+          core.info(`Recommending ${removals.length} test(s) for un-quarantine.`);
+          const prNumber = resolvePrNumber();
+          const sourcePrUrl =
+            prNumber !== undefined ? `https://github.com/${owner}/${repo}/pull/${prNumber}` : undefined;
+          const result = await openOrUpdateUnQuarantinePr({
+            octokit,
+            owner,
+            repo,
+            removals,
+            minPasses: unQuarantineMinPasses,
+            sourcePrNumber: prNumber,
+            sourcePrUrl,
+          });
+          if (result) {
+            unQuarantinePrUrl = result.htmlUrl;
+            core.info(
+              `${result.created ? 'Created' : 'Updated'} un-quarantine PR #${result.number}: ${result.htmlUrl}`,
+            );
+          }
+          unQuarantineSection = [
+            '',
+            '## Un-quarantine recommendations',
+            '',
+            `${removals.length} previously-quarantined test(s) have ${unQuarantineMinPasses}+ consecutive passes and can return to the build.`,
+            unQuarantinePrUrl ? `Review and merge: [un-quarantine PR](${unQuarantinePrUrl})` : '',
+            '',
+          ]
+            .filter(Boolean)
+            .join('\n');
+        } else {
+          core.info('No un-quarantine candidates this run.');
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        core.warning(`Un-quarantine flow failed: ${msg}`);
+      }
+    }
+
+    const markdown = reportMarkdown + quarantineSection + unQuarantineSection;
 
     core.setOutput('flaky-count', summary.flaky);
     core.setOutput('break-count', summary.realBreaks);
     core.setOutput('inconclusive-count', summary.inconclusive);
     core.setOutput('report-markdown', markdown);
     if (quarantinePrUrl) core.setOutput('quarantine-pr-url', quarantinePrUrl);
+    if (unQuarantinePrUrl) core.setOutput('un-quarantine-pr-url', unQuarantinePrUrl);
 
     core.info('--- Report ---');
     core.info(markdown);

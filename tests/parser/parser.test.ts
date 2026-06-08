@@ -86,6 +86,31 @@ describe('parseJUnitXML', () => {
   });
 });
 
+describe('parseJUnitXML — skipped testcases', () => {
+  const xmlWithSkipped = `<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="2" failures="0" errors="0" skipped="1" time="0.5">
+  <testsuite name="tests/foo.test.ts" tests="2" failures="0" errors="0" skipped="1" time="0.5">
+    <testcase classname="tests/foo.test.ts" name="passes normally" time="0.1"></testcase>
+    <testcase classname="tests/foo.test.ts" name="quarantined" time="0.1">
+      <skipped message="quarantined by flaky-triager"></skipped>
+    </testcase>
+  </testsuite>
+</testsuites>`;
+
+  it('emits status=skipped when a testcase has a <skipped> child', () => {
+    const result = parseJUnitXML(xmlWithSkipped);
+    expect(result.results).toHaveLength(2);
+    const quarantined = result.results.find((r) => r.testName === 'quarantined');
+    expect(quarantined?.status).toBe('skipped');
+  });
+
+  it('still emits status=passed when a testcase has no failure and no skipped child', () => {
+    const result = parseJUnitXML(xmlWithSkipped);
+    const normal = result.results.find((r) => r.testName === 'passes normally');
+    expect(normal?.status).toBe('passed');
+  });
+});
+
 describe('parseJUnitXMLFiles', () => {
   it('parses multiple XML files from a directory', () => {
     const fixtureDir = path.join(__dirname, '..', 'fixtures');

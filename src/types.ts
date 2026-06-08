@@ -34,6 +34,8 @@ export interface ScoredResult {
   passes: number;
   failureMessage?: string;
   stackTrace?: string;
+  /** True when any attempt this run was demoted to skipped (e.g. by filter-junit). */
+  wasSkipped?: boolean;
 }
 
 export interface FailureContext {

@@ -33,6 +33,10 @@ inputs:
     description: 'How many recent runs to load per test when augmenting verdicts.'
     required: false
     default: '10'
+  un-quarantine-min-passes:
+    description: 'How many consecutive genuine passes (verdict=passing AND not filter-junit-demoted) a quarantined test needs before flaky-triager opens a PR to remove it from .flaky-quarantine.json.'
+    required: false
+    default: '5'
 
 outputs:
   flaky-count:
@@ -45,6 +49,8 @@ outputs:
     description: 'Full markdown report posted to the PR (also available in the workflow logs).'
   quarantine-pr-url:
     description: 'URL of the quarantine recommendations PR, if one was created or updated.'
+  un-quarantine-pr-url:
+    description: 'URL of the un-quarantine recommendations PR, if one was created or updated.'
 
 runs:
   using: 'node20'

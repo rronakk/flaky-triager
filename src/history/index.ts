@@ -20,5 +20,6 @@ export function recordsFromScored(
     suite: s.suite,
     verdict: s.verdict,
     failureMessage: s.failureMessage,
+    wasSkipped: s.wasSkipped,
   }));
 }

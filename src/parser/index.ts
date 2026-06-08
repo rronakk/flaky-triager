@@ -25,13 +25,14 @@ export function parseJUnitXML(xml: string, sourceFile?: string): TestRunSummary 
       const className = tc['@_classname'] ?? suiteName;
       const duration = parseFloat(tc['@_time'] ?? '0');
       const failures: any[] = tc.failure ?? [];
+      const isSkipped = tc.skipped !== undefined;
 
       if (failures.length === 0) {
         results.push({
           testName,
           suite: suiteName,
           className,
-          status: 'passed',
+          status: isSkipped ? 'skipped' : 'passed',
           duration,
           retryIndex: 0,
         });

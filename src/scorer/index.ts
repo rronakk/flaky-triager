@@ -47,6 +47,7 @@ export function scoreTestResults(
     const sorted = [...attempts].sort((a, b) => a.retryIndex - b.retryIndex);
     const failures = sorted.filter((a) => a.status === 'failed');
     const passes = sorted.filter((a) => a.status === 'passed');
+    const wasSkipped = sorted.some((a) => a.status === 'skipped');
     const hasFailed = failures.length > 0;
     const hasPassed = passes.length > 0;
     const sameSHADivergence = hasFailed && hasPassed;
@@ -89,6 +90,7 @@ export function scoreTestResults(
       passes: passes.length,
       failureMessage: firstFailure?.failureMessage,
       stackTrace: firstFailure?.stackTrace,
+      wasSkipped: wasSkipped || undefined,
     });
   }
 
